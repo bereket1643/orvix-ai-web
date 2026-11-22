@@ -215,27 +215,27 @@
               <span class="mono text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400">LIVE</span>
             </div>
 
-            <!-- Phone Chat Preview -->
-            <div id="phoneChatBody" class="p-4 space-y-3.5 min-h-[290px] flex flex-col justify-between text-xs">
-              <div class="space-y-3">
-                <div class="flex justify-end">
-                  <div id="phoneUserMsg" class="bg-sky-500/20 border border-sky-400/30 text-slate-100 px-3.5 py-2.5 rounded-2xl rounded-tr-sm max-w-[84%] leading-relaxed">
-                    Summarize how solar panels generate electricity.
-                  </div>
-                </div>
-                <div class="flex items-start gap-2.5">
-                  <div class="w-6 h-6 rounded-full bg-gradient-to-tr from-sky-400 to-emerald-400 shrink-0 mt-0.5"></div>
-                  <div id="phoneAiMsg" class="text-slate-200 leading-relaxed bg-white/[0.04] border border-white/10 px-3.5 py-2.5 rounded-2xl rounded-tl-sm">
-                    Photovoltaic cells absorb sunlight and knock electrons loose inside silicon layers, creating a direct electric current that an inverter converts for everyday use.
+            <!-- Live Interactive Orvix AI Chat -->
+            <div class="p-3.5 flex flex-col justify-between h-[330px] text-xs">
+              <div id="liveWebMsgs" class="flex-1 overflow-y-auto space-y-2.5 pr-1">
+                <div class="flex items-start gap-2">
+                  <div class="w-5 h-5 rounded-full bg-gradient-to-tr from-sky-400 to-emerald-400 shrink-0 mt-0.5"></div>
+                  <div class="text-slate-200 leading-relaxed bg-white/[0.04] border border-white/10 px-3 py-2 rounded-2xl rounded-tl-sm">
+                    Hi! I'm Orvix AI. Ask me anything right here on the website!
                   </div>
                 </div>
               </div>
 
-              <!-- Phone Quick Switcher -->
-              <div class="pt-3 border-t border-white/10 flex items-center justify-between gap-1.5">
-                <button type="button" data-pmode="fast" class="pmode-btn pill-active flex-1 py-1.5 rounded-xl border border-white/10 text-[11px] font-semibold">Fast</button>
-                <button type="button" data-pmode="thinking" class="pmode-btn flex-1 py-1.5 rounded-xl border border-white/10 text-[11px] font-semibold text-slate-400">Thinking</button>
-                <button type="button" data-pmode="deep" class="pmode-btn flex-1 py-1.5 rounded-xl border border-white/10 text-[11px] font-semibold text-slate-400">Research</button>
+              <div class="pt-2.5 border-t border-white/10 space-y-2">
+                <div class="flex items-center gap-1.5">
+                  <button type="button" data-pmode="fast" class="pmode-btn pill-active flex-1 py-1 rounded-lg border border-white/10 text-[10px] font-semibold">Fast</button>
+                  <button type="button" data-pmode="thinking" class="pmode-btn flex-1 py-1 rounded-lg border border-white/10 text-[10px] font-semibold text-slate-400">Thinking</button>
+                  <button type="button" data-pmode="deep" class="pmode-btn flex-1 py-1 rounded-lg border border-white/10 text-[10px] font-semibold text-slate-400">Research</button>
+                </div>
+                <div class="flex items-center gap-1.5 bg-white/[0.06] border border-white/15 rounded-xl px-2.5 py-1.5">
+                  <input id="webChatInput" type="text" placeholder="Ask Orvix AI..." class="flex-1 bg-transparent text-white text-xs outline-none placeholder:text-slate-400" />
+                  <button id="webChatSendBtn" type="button" class="px-2.5 py-1 rounded-lg bg-sky-400 text-slate-950 font-bold text-[11px]">Send</button>
+                </div>
               </div>
             </div>
           </div>
@@ -515,18 +515,114 @@
       document.getElementById('themeToggleBtn').textContent = theme === 'dark' ? '☀️' : '🌙';
     });
 
+    const WEB_MODELS = {
+      fast: { id: 'openai/gpt-oss-20b', label: 'Orvix Fast' },
+      thinking: { id: 'openai/gpt-oss-120b', label: 'Orvix Thinking' },
+      deep: { id: 'qwen/qwen3.8-27b', label: 'Orvix Deep Research' }
+    };
+    let activeWebMode = 'fast';
+    let webChatHistory = [];
+    let webBusy = false;
+
     document.querySelectorAll('.pmode-btn').forEach(btn => {
       btn.addEventListener('click', () => {
-        const key = btn.getAttribute('data-pmode');
-        const s = PHONE_SAMPLES[key];
+        activeWebMode = btn.getAttribute('data-pmode') || 'fast';
         document.querySelectorAll('.pmode-btn').forEach(b => {
           b.classList.toggle('pill-active', b === btn);
           b.classList.toggle('text-slate-400', b !== btn);
         });
-        document.getElementById('phoneModeLabel').textContent = s.label;
-        document.getElementById('phoneUserMsg').textContent = s.user;
-        document.getElementById('phoneAiMsg').textContent = s.ai;
+        document.getElementById('phoneModeLabel').textContent = WEB_MODELS[activeWebMode].label;
       });
+    });
+
+    function appendWebBubble(role, text) {
+      const box = document.getElementById('liveWebMsgs');
+      const wrap = document.createElement('div');
+      if (role === 'user') {
+        wrap.className = 'flex justify-end';
+        const b = document.createElement('div');
+        b.className = 'bg-sky-500/20 border border-sky-400/30 text-slate-100 px-3 py-2 rounded-2xl rounded-tr-sm max-w-[85%] leading-relaxed';
+        b.textContent = text;
+        wrap.appendChild(b);
+      } else {
+        wrap.className = 'flex items-start gap-2';
+        const dot = document.createElement('div');
+        dot.className = 'w-5 h-5 rounded-full bg-gradient-to-tr from-sky-400 to-emerald-400 shrink-0 mt-0.5';
+        const b = document.createElement('div');
+        b.className = 'text-slate-200 leading-relaxed bg-white/[0.04] border border-white/10 px-3 py-2 rounded-2xl rounded-tl-sm max-w-[88%] whitespace-pre-wrap';
+        b.textContent = text;
+        wrap.appendChild(dot);
+        wrap.appendChild(b);
+      }
+      box.appendChild(wrap);
+      box.scrollTop = box.scrollHeight;
+      return wrap.lastElementChild;
+    }
+
+    async function sendWebChat() {
+      if (webBusy) return;
+      const inp = document.getElementById('webChatInput');
+      const txt = inp.value.trim();
+      if (!txt) return;
+      inp.value = '';
+      webBusy = true;
+      appendWebBubble('user', txt);
+      webChatHistory.push({ role: 'user', content: txt });
+      const aiEl = appendWebBubble('assistant', 'Orvix analysing...');
+
+      try {
+        const res = await fetch('https://orvix-ai-bot.bereket1643.workers.dev/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            messages: webChatHistory.slice(-8),
+            model: WEB_MODELS[activeWebMode].id,
+            lang: lang
+          })
+        });
+        if (!res.ok) {
+          aiEl.textContent = 'Error: ' + (await res.text());
+        } else {
+          const reader = res.body.getReader();
+          const decoder = new TextDecoder();
+          let buf = '';
+          let full = '';
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            buf += decoder.decode(value, { stream: true });
+            const lines = buf.split('\n');
+            buf = lines.pop() || '';
+            for (const line of lines) {
+              const tr = line.trim();
+              if (!tr.startsWith('data:')) continue;
+              const d = tr.slice(5).trim();
+              if (d === '[DONE]') break;
+              try {
+                const j = JSON.parse(d);
+                const delta = j.choices && j.choices[0] && j.choices[0].delta && j.choices[0].delta.content;
+                if (delta) {
+                  full += delta;
+                  aiEl.textContent = full;
+                  const box = document.getElementById('liveWebMsgs');
+                  box.scrollTop = box.scrollHeight;
+                }
+              } catch (_) {}
+            }
+          }
+          if (full) webChatHistory.push({ role: 'assistant', content: full });
+          else aiEl.textContent = 'No response received.';
+        }
+      } catch (_) {
+        aiEl.textContent = 'Could not reach Orvix server. Tap "Launch Orvix AI Now" or open in Telegram.';
+      } finally {
+        webBusy = false;
+      }
+    }
+
+    document.getElementById('webChatSendBtn').addEventListener('click', sendWebChat);
+    document.getElementById('webChatInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') sendWebChat();
     });
 
     document.querySelectorAll('.vpreset-btn').forEach(btn => {
