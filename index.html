@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Orvix AI — Next-Gen Intelligence on Telegram &amp; Web</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #030712;
+      --card: rgba(17, 24, 39, 0.55);
+      --card-hover: rgba(30, 41, 59, 0.68);
+      --border: rgba(255, 255, 255, 0.09);
+      --border-hi: rgba(56, 189, 248, 0.4);
+      --text: #f9fafb;
+      --muted: #9ca3af;
+      --grid: rgba(255, 255, 255, 0.03);
+    }
+    html.light {
+      --bg: #f8fafc;
+      --card: rgba(255, 255, 255, 0.85);
+      --card-hover: rgba(255, 255, 255, 0.96);
+      --border: rgba(15, 23, 42, 0.09);
+      --border-hi: rgba(2, 132, 199, 0.45);
+      --text: #0f172a;
+      --muted: #475569;
+      --grid: rgba(15, 23, 42, 0.035);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .bg-grid {
+      background-image:
+        linear-gradient(to right, var(--grid) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--grid) 1px, transparent 1px);
+      background-size: 44px 44px;
+    }
+    .hero-glow {
+      position: absolute;
+      inset: -120px 0 auto 0;
+      height: 540px;
+      background:
+        radial-gradient(ellipse 55% 45% at 50% 25%, rgba(56, 189, 248, 0.2), transparent 70%),
+        radial-gradient(ellipse 40% 35% at 25% 35%, rgba(16, 185, 129, 0.14), transparent 70%),
+        radial-gradient(ellipse 40% 35% at 75% 35%, rgba(139, 92, 246, 0.14), transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .glass-panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+    }
+    .glass-panel:hover {
+      border-color: var(--border-hi);
+      background: var(--card-hover);
+    }
+    .nav-blur {
+      background: rgba(3, 7, 18, 0.72);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+    html.light .nav-blur { background: rgba(248, 250, 252, 0.82); }
+    .cta-primary {
+      background: linear-gradient(135deg, #38bdf8 0%, #10b981 100%);
+      color: #031520;
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.18) inset, 0 12px 32px -6px rgba(56, 189, 248, 0.45);
+      transition: transform 0.16s ease, box-shadow 0.2s ease;
+    }
+    .cta-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.28) inset, 0 18px 40px -6px rgba(56, 189, 248, 0.6);
+    }
+    .phone-frame {
+      border-radius: 38px;
+      padding: 10px;
+      background: linear-gradient(145deg, rgba(255,255,255,0.16), rgba(255,255,255,0.03));
+      box-shadow: 0 30px 90px -20px rgba(0, 0, 0, 0.75), 0 0 50px -15px rgba(56, 189, 248, 0.25);
+    }
+    .phone-screen {
+      border-radius: 30px;
+      background: #090d16;
+      color: #f8fafc;
+      border: 1px solid rgba(255,255,255,0.08);
+      overflow: hidden;
+    }
+    .orb-live {
+      width: 118px; height: 118px; border-radius: 9999px;
+      background: radial-gradient(circle at 32% 28%, #ffffff 0%, #bae6fd 24%, #38bdf8 56%, #0284c7 84%, #1e3a8a 100%);
+      box-shadow: 0 0 55px rgba(56, 189, 248, 0.55), inset 0 10px 24px rgba(255, 255, 255, 0.6);
+      transition: transform 0.2s ease, box-shadow 0.25s ease;
+    }
+    .orb-live.speaking {
+      animation: orbSpeak 0.55s infinite alternate ease-in-out;
+      box-shadow: 0 0 85px rgba(56, 189, 248, 0.85), inset 0 10px 26px rgba(255, 255, 255, 0.7);
+    }
+    @keyframes orbSpeak {
+      0% { transform: scale(0.98); border-radius: 50%; }
+      100% { transform: scale(1.1); border-radius: 47% 53% 49% 51% / 52% 48% 52% 48%; }
+    }
+    .muted { color: var(--muted); }
+    .pill-active {
+      background: rgba(56, 189, 248, 0.16) !important;
+      border-color: rgba(56, 189, 248, 0.55) !important;
+      color: #38bdf8 !important;
+    }
+    .faq-body { display: none; }
+    .faq-item.open .faq-body { display: block; }
+    .faq-item.open .faq-icon { transform: rotate(45deg); }
+    .toast {
+      position: fixed; bottom: 24px; left: 50%;
+      transform: translateX(-50%) translateY(16px);
+      opacity: 0; pointer-events: none; transition: all 0.22s ease; z-index: 90;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body class="bg-grid antialiased selection:bg-sky-400/30">
+  <div class="hero-glow"></div>
+
+  <!-- Top Navigation -->
+  <header class="nav-blur sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+      <a href="#top" class="flex items-center gap-2.5 shrink-0">
+        <img id="navLogo" src="https://raw.githubusercontent.com/bereket1643/orvix-ai/main/logo.png" alt="Orvix AI" class="w-9 h-9 rounded-full object-cover ring-1 ring-sky-400/40 bg-slate-950" />
+        <div class="flex items-center gap-2">
+          <span class="font-extrabold text-base sm:text-lg tracking-tight">Orvix AI</span>
+          <span class="hidden sm:inline-block mono text-[10px] px-2 py-0.5 rounded-full bg-sky-500/15 text-sky-400 border border-sky-400/25">v2.0</span>
+        </div>
+      </a>
+
+      <nav class="hidden md:flex items-center gap-7 text-sm font-medium muted">
+        <a href="#capabilities" data-i18n="navCap" class="hover:text-sky-400 transition">Capabilities</a>
+        <a href="#playground" data-i18n="navPlay" class="hover:text-sky-400 transition">Live Demo</a>
+        <a href="#faq" data-i18n="navFaq" class="hover:text-sky-400 transition">FAQ</a>
+        <a href="#creator" data-i18n="navCreator" class="hover:text-sky-400 transition">Creator</a>
+      </nav>
+
+      <div class="flex items-center gap-2">
+        <button id="langToggleBtn" type="button" class="glass-panel px-3 py-1.5 rounded-full text-xs font-semibold">አማርኛ</button>
+        <button id="themeToggleBtn" type="button" aria-label="Toggle theme" class="glass-panel w-9 h-9 rounded-full flex items-center justify-center text-sm">☀️</button>
+        <a href="https://orvix-ai-bot.bereket1643.workers.dev" target="_blank" rel="noopener noreferrer" data-i18n="navLaunch" class="cta-primary px-4 py-2 rounded-full text-xs sm:text-sm font-bold">
+          Open App
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Split Hero with Interactive Phone Mockup -->
+  <section id="top" class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pt-12 pb-16 lg:pt-20 lg:pb-24">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+      <!-- Left Copy -->
+      <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+        <div class="glass-panel inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full text-xs font-medium">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span data-i18n="heroBadge" class="muted">Powered by Edge AI • 100% Free Access</span>
+        </div>
+
+        <h1 data-i18n="heroTitle" class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.08]">
+          The AI workspace built for <span class="bg-gradient-to-r from-sky-400 via-cyan-300 to-emerald-400 bg-clip-text text-transparent">speed, voice &amp; vision.</span>
+        </h1>
+
+        <p data-i18n="heroDesc" class="muted text-base sm:text-lg leading-relaxed max-w-2xl mx-auto lg:mx-0">
+          Orvix AI brings instant answers, deep multi-step research, real-time voice conversations, and photo analysis straight into Telegram and the web — in English and Amharic.
+        </p>
+
+        <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 pt-1">
+          <a href="https://orvix-ai-bot.bereket1643.workers.dev" target="_blank" rel="noopener noreferrer" data-i18n="ctaPrimary" class="cta-primary px-7 py-3.5 rounded-2xl text-sm sm:text-base font-bold w-full sm:w-auto text-center">
+            Launch Orvix AI Now
+          </a>
+          <a href="#playground" data-i18n="ctaSecondary" class="glass-panel px-7 py-3.5 rounded-2xl text-sm sm:text-base font-semibold w-full sm:w-auto text-center">
+            Try Interactive Demo ↓
+          </a>
+        </div>
+
+        <!-- Technical Spec Metrics -->
+        <div class="grid grid-cols-3 gap-3 pt-4 max-w-lg mx-auto lg:mx-0">
+          <div class="glass-panel rounded-2xl p-3.5">
+            <div class="mono text-base sm:text-lg font-bold text-sky-400">&lt;0.4s</div>
+            <div data-i18n="m1" class="text-[11px] muted mt-0.5">Fast Mode Latency</div>
+          </div>
+          <div class="glass-panel rounded-2xl p-3.5">
+            <div class="mono text-base sm:text-lg font-bold text-emerald-400">120B</div>
+            <div data-i18n="m2" class="text-[11px] muted mt-0.5">Reasoning Engine</div>
+          </div>
+          <div class="glass-panel rounded-2xl p-3.5">
+            <div class="mono text-base sm:text-lg font-bold text-violet-400">27B VL</div>
+            <div data-i18n="m3" class="text-[11px] muted mt-0.5">Vision &amp; Research</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Live Phone Mockup -->
+      <div class="lg:col-span-5 flex justify-center">
+        <div class="phone-frame w-full max-w-[350px]">
+          <div class="phone-screen">
+            <!-- Phone Top Bar -->
+            <div class="px-4 py-3 border-b border-white/10 flex items-center justify-between bg-white/[0.03]">
+              <div class="flex items-center gap-2">
+                <img id="phoneLogo" src="https://raw.githubusercontent.com/bereket1643/orvix-ai/main/logo.png" alt="Orvix" class="w-6 h-6 rounded-full object-cover" />
+                <span id="phoneModeLabel" class="text-xs font-bold">Orvix Fast</span>
+              </div>
+              <span class="mono text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400">LIVE</span>
+            </div>
+
+            <!-- Phone Chat Preview -->
+            <div id="phoneChatBody" class="p-4 space-y-3.5 min-h-[290px] flex flex-col justify-between text-xs">
+              <div class="space-y-3">
+                <div class="flex justify-end">
+                  <div id="phoneUserMsg" class="bg-sky-500/20 border border-sky-400/30 text-slate-100 px-3.5 py-2.5 rounded-2xl rounded-tr-sm max-w-[84%] leading-relaxed">
+                    Summarize how solar panels generate electricity.
+                  </div>
+                </div>
+                <div class="flex items-start gap-2.5">
+                  <div class="w-6 h-6 rounded-full bg-gradient-to-tr from-sky-400 to-emerald-400 shrink-0 mt-0.5"></div>
+                  <div id="phoneAiMsg" class="text-slate-200 leading-relaxed bg-white/[0.04] border border-white/10 px-3.5 py-2.5 rounded-2xl rounded-tl-sm">
+                    Photovoltaic cells absorb sunlight and knock electrons loose inside silicon layers, creating a direct electric current that an inverter converts for everyday use.
+                  </div>
+                </div>
+              </div>
+
+              <!-- Phone Quick Switcher -->
+              <div class="pt-3 border-t border-white/10 flex items-center justify-between gap-1.5">
+                <button type="button" data-pmode="fast" class="pmode-btn pill-active flex-1 py-1.5 rounded-xl border border-white/10 text-[11px] font-semibold">Fast</button>
+                <button type="button" data-pmode="thinking" class="pmode-btn flex-1 py-1.5 rounded-xl border border-white/10 text-[11px] font-semibold text-slate-400">Thinking</button>
+                <button type="button" data-pmode="deep" class="pmode-btn flex-1 py-1.5 rounded-xl border border-white/10 text-[11px] font-semibold text-slate-400">Research</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bento Capabilities Grid -->
+  <section id="capabilities" class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-14">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
+      <div>
+        <div class="mono text-xs text-sky-400 uppercase tracking-widest mb-2">Architecture</div>
+        <h2 data-i18n="capTitle" class="text-3xl sm:text-4xl font-extrabold tracking-tight">Everything you need, zero clutter.</h2>
+      </div>
+      <p data-i18n="capSub" class="muted text-sm sm:text-base max-w-md">Engineered for mobile speed with frosted Liquid Glass aesthetics and edge-cached delivery.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-6 gap-4">
+      <!-- Card 1 (Span 3) -->
+      <div class="md:col-span-3 glass-panel rounded-3xl p-7 flex flex-col justify-between gap-5">
+        <div class="flex items-center justify-between">
+          <span class="w-11 h-11 rounded-2xl bg-sky-500/15 border border-sky-400/25 text-sky-400 flex items-center justify-center text-xl">🎙️</span>
+          <span class="mono text-[11px] muted">Orpheus + WebAudio</span>
+        </div>
+        <div>
+          <h3 data-i18n="b1Title" class="text-xl font-bold mb-2">Live Voice Conversations</h3>
+          <p data-i18n="b1Desc" class="muted text-sm leading-relaxed">Speak naturally with an audio-reactive glowing orb, switch between Female, Male, and Kids voices, toggle live captions, and tap anywhere to interrupt.</p>
+        </div>
+      </div>
+
+      <!-- Card 2 (Span 3) -->
+      <div class="md:col-span-3 glass-panel rounded-3xl p-7 flex flex-col justify-between gap-5">
+        <div class="flex items-center justify-between">
+          <span class="w-11 h-11 rounded-2xl bg-emerald-500/15 border border-emerald-400/25 text-emerald-400 flex items-center justify-center text-xl">🖼️</span>
+          <span class="mono text-[11px] muted">Qwen 3.8 27B VL</span>
+        </div>
+        <div>
+          <h3 data-i18n="b2Title" class="text-xl font-bold mb-2">Multimodal Vision Analysis</h3>
+          <p data-i18n="b2Desc" class="muted text-sm leading-relaxed">Snap or upload screenshots, diagrams, math homework, or code errors inside the Mini App or directly in Telegram chat for instant visual breakdowns.</p>
+        </div>
+      </div>
+
+      <!-- Card 3 (Span 2) -->
+      <div class="md:col-span-2 glass-panel rounded-3xl p-6 space-y-3">
+        <span class="w-10 h-10 rounded-xl bg-violet-500/15 text-violet-400 flex items-center justify-center text-lg">💎</span>
+        <h3 data-i18n="b3Title" class="font-bold text-lg">Liquid Glass Controls</h3>
+        <p data-i18n="b3Desc" class="muted text-sm leading-relaxed">Adjust font size, screen brightness, dark/light themes, and custom instructions on the fly.</p>
+      </div>
+
+      <!-- Card 4 (Span 2) -->
+      <div class="md:col-span-2 glass-panel rounded-3xl p-6 space-y-3">
+        <span class="w-10 h-10 rounded-xl bg-cyan-500/15 text-cyan-400 flex items-center justify-center text-lg">🌍</span>
+        <h3 data-i18n="b4Title" class="font-bold text-lg">English &amp; Amharic</h3>
+        <p data-i18n="b4Desc" class="muted text-sm leading-relaxed">Seamless bilingual support across UI, text responses, and voice recognition.</p>
+      </div>
+
+      <!-- Card 5 (Span 2) -->
+      <div class="md:col-span-2 glass-panel rounded-3xl p-6 space-y-3">
+        <span class="w-10 h-10 rounded-xl bg-amber-500/15 text-amber-400 flex items-center justify-center text-lg">🔒</span>
+        <h3 data-i18n="b5Title" class="font-bold text-lg">Private History</h3>
+        <p data-i18n="b5Desc" class="muted text-sm leading-relaxed">Your chats stay on your own device with Temporary Chat mode and one-tap confirmation delete.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Voice & Mode Playground -->
+  <section id="playground" class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-14">
+    <div class="glass-panel rounded-3xl p-6 sm:p-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+      <div class="lg:col-span-7 space-y-5">
+        <div class="mono text-xs text-emerald-400 uppercase tracking-widest">Interactive Preview</div>
+        <h2 data-i18n="playTitle" class="text-2xl sm:text-3xl font-extrabold">Test Orvix Voice &amp; Modes</h2>
+        <p data-i18n="playSub" class="muted text-sm sm:text-base leading-relaxed">Pick a voice personality and tap the orb to preview the live reactive state, or test a sample prompt.</p>
+
+        <div class="flex flex-wrap gap-2">
+          <button type="button" data-voice="Female (Hannah)" class="vpreset-btn pill-active glass-panel px-4 py-2 rounded-full text-xs font-semibold">👩 Female</button>
+          <button type="button" data-voice="Male (Troy)" class="vpreset-btn glass-panel px-4 py-2 rounded-full text-xs font-semibold">👨 Male</button>
+          <button type="button" data-voice="Kids (Autumn)" class="vpreset-btn glass-panel px-4 py-2 rounded-full text-xs font-semibold">🧒 Kids</button>
+        </div>
+
+        <div class="glass-panel rounded-2xl p-4 flex items-center justify-between gap-4">
+          <div class="text-xs sm:text-sm">
+            <div class="font-semibold" id="playStatusTitle">Ready to preview</div>
+            <div class="muted text-xs mt-0.5" id="playStatusSub">Tap the orb on the right to simulate live speech</div>
+          </div>
+          <a href="https://orvix-ai-bot.bereket1643.workers.dev" target="_blank" rel="noopener noreferrer" class="cta-primary px-4 py-2 rounded-xl text-xs font-bold shrink-0">Try Real App</a>
+        </div>
+      </div>
+
+      <div class="lg:col-span-5 flex flex-col items-center justify-center gap-4 py-4">
+        <button id="demoOrbBtn" type="button" aria-label="Toggle live orb preview" class="orb-live cursor-pointer focus:outline-none"></button>
+        <span id="orbLabel" class="mono text-xs text-sky-400">TAP ORB TO PREVIEW</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Accordion -->
+  <section id="faq" class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 py-14">
+    <div class="text-center mb-10">
+      <div class="mono text-xs text-sky-400 uppercase tracking-widest mb-2">FAQ</div>
+      <h2 data-i18n="faqTitle" class="text-2xl sm:text-4xl font-extrabold">Common Questions</h2>
+    </div>
+
+    <div class="space-y-3">
+      <div class="faq-item glass-panel rounded-2xl p-5">
+        <button type="button" class="faq-trigger w-full flex items-center justify-between text-left font-semibold text-sm sm:text-base gap-4">
+          <span data-i18n="q1">Is Orvix AI free to use?</span>
+          <span class="faq-icon text-sky-400 text-xl transition-transform">+</span>
+        </button>
+        <div data-i18n="a1" class="faq-body muted text-sm pt-3 leading-relaxed">
+          Yes! Orvix AI runs on edge cloud infrastructure and free-tier AI models so anyone can chat, use voice mode, and analyze images without a subscription.
+        </div>
+      </div>
+
+      <div class="faq-item glass-panel rounded-2xl p-5">
+        <button type="button" class="faq-trigger w-full flex items-center justify-between text-left font-semibold text-sm sm:text-base gap-4">
+          <span data-i18n="q2">Can I use it both inside Telegram and on the web?</span>
+          <span class="faq-icon text-sky-400 text-xl transition-transform">+</span>
+        </button>
+        <div data-i18n="a2" class="faq-body muted text-sm pt-3 leading-relaxed">
+          Yes — you can chat directly with the Orvix AI Telegram bot, launch the Mini App inside Telegram, or open the web app directly from this site.
+        </div>
+      </div>
+
+      <div class="faq-item glass-panel rounded-2xl p-5">
+        <button type="button" class="faq-trigger w-full flex items-center justify-between text-left font-semibold text-sm sm:text-base gap-4">
+          <span data-i18n="q3">Are my conversations private?</span>
+          <span class="faq-icon text-sky-400 text-xl transition-transform">+</span>
+        </button>
+        <div data-i18n="a3" class="faq-body muted text-sm pt-3 leading-relaxed">
+          Your chat history is stored locally in your own device browser storage, and you can use Temporary Chat mode anytime for zero saved history.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Creator Card -->
+  <section id="creator" class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-12 pb-20">
+    <div class="glass-panel rounded-3xl p-7 sm:p-10 flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="space-y-2 text-center md:text-left">
+        <div class="mono text-xs text-emerald-400 uppercase tracking-widest">Built By</div>
+        <h2 class="text-2xl sm:text-3xl font-extrabold">Bereket Tesfaye</h2>
+        <p data-i18n="creatorBio" class="muted text-sm sm:text-base max-w-xl">
+          Grade 11, Class B student &amp; creator of Orvix AI. Reach out on Telegram or WhatsApp/Phone for feedback, ideas, or updates.
+        </p>
+      </div>
+
+      <div class="flex flex-wrap items-center justify-center gap-3">
+        <a href="https://t.me/orvix16" target="_blank" rel="noopener noreferrer" class="cta-primary px-5 py-3 rounded-2xl text-sm font-bold flex items-center gap-2">
+          <span>✈️</span> <span>@orvix16</span>
+        </a>
+        <a href="tel:0960934894" class="glass-panel px-5 py-3 rounded-2xl text-sm font-semibold flex items-center gap-2">
+          <span>📞</span> <span>0960934894</span>
+        </a>
+        <button id="copyPhoneBtn" type="button" class="glass-panel px-4 py-3 rounded-2xl text-sm font-semibold">Copy</button>
+      </div>
+    </div>
+  </section>
+
+  <footer class="border-t border-white/10 py-8 text-center text-xs muted px-4">
+    <p>© 2026 Orvix AI • Crafted by Bereket Tesfaye</p>
+  </footer>
+
+  <div id="toast" class="toast glass-panel px-4 py-2.5 rounded-full text-xs font-semibold text-sky-400"></div>
+
+  <script>
+    const FALLBACK_LOGO = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#38bdf8"/><stop offset="100%" stop-color="#10b981"/></linearGradient></defs><rect width="64" height="64" rx="32" fill="#030712"/><circle cx="32" cy="32" r="20" fill="none" stroke="url(#g)" stroke-width="5"/><circle cx="32" cy="32" r="6" fill="#38bdf8"/></svg>'
+    );
+    ['navLogo', 'phoneLogo'].forEach(id => {
+      const img = document.getElementById(id);
+      if (img) img.addEventListener('error', () => { img.src = FALLBACK_LOGO; });
+    });
+
+    const I18N = {
+      en: {
+        langBtn: 'አማርኛ',
+        navCap: 'Capabilities', navPlay: 'Live Demo', navFaq: 'FAQ', navCreator: 'Creator', navLaunch: 'Open App',
+        heroBadge: 'Powered by Edge AI • 100% Free Access',
+        heroTitle: 'The AI workspace built for <span class="bg-gradient-to-r from-sky-400 via-cyan-300 to-emerald-400 bg-clip-text text-transparent">speed, voice &amp; vision.</span>',
+        heroDesc: 'Orvix AI brings instant answers, deep multi-step research, real-time voice conversations, and photo analysis straight into Telegram and the web — in English and Amharic.',
+        ctaPrimary: 'Launch Orvix AI Now', ctaSecondary: 'Try Interactive Demo ↓',
+        m1: 'Fast Mode Latency', m2: 'Reasoning Engine', m3: 'Vision & Research',
+        capTitle: 'Everything you need, zero clutter.',
+        capSub: 'Engineered for mobile speed with frosted Liquid Glass aesthetics and edge-cached delivery.',
+        b1Title: 'Live Voice Conversations',
+        b1Desc: 'Speak naturally with an audio-reactive glowing orb, switch between Female, Male, and Kids voices, toggle live captions, and tap anywhere to interrupt.',
+        b2Title: 'Multimodal Vision Analysis',
+        b2Desc: 'Snap or upload screenshots, diagrams, math homework, or code errors inside the Mini App or directly in Telegram chat for instant visual breakdowns.',
+        b3Title: 'Liquid Glass Controls', b3Desc: 'Adjust font size, screen brightness, dark/light themes, and custom instructions on the fly.',
+        b4Title: 'English & Amharic', b4Desc: 'Seamless bilingual support across UI, text responses, and voice recognition.',
+        b5Title: 'Private History', b5Desc: 'Your chats stay on your own device with Temporary Chat mode and one-tap confirmation delete.',
+        playTitle: 'Test Orvix Voice & Modes',
+        playSub: 'Pick a voice personality and tap the orb to preview the live reactive state, or test a sample prompt.',
+        faqTitle: 'Common Questions',
+        q1: 'Is Orvix AI free to use?',
+        a1: 'Yes! Orvix AI runs on edge cloud infrastructure and free-tier AI models so anyone can chat, use voice mode, and analyze images without a subscription.',
+        q2: 'Can I use it both inside Telegram and on the web?',
+        a2: 'Yes — you can chat directly with the Orvix AI Telegram bot, launch the Mini App inside Telegram, or open the web app directly from this site.',
+        q3: 'Are my conversations private?',
+        a3: 'Your chat history is stored locally in your own device browser storage, and you can use Temporary Chat mode anytime for zero saved history.',
+        creatorBio: 'Grade 11, Class B student & creator of Orvix AI. Reach out on Telegram or WhatsApp/Phone for feedback, ideas, or updates.'
+      },
+      am: {
+        langBtn: 'English',
+        navCap: 'ባህሪያት', navPlay: 'ሙከራ', navFaq: 'ጥያቄዎች', navCreator: 'ፈጣሪው', navLaunch: 'አፑን ክፈት',
+        heroBadge: 'በ Edge AI የሚሰራ • 100% ነፃ',
+        heroTitle: 'ለፍጥነት፣ ለድምጽ እና ለምስል ትንተና የተሰራ <span class="bg-gradient-to-r from-sky-400 via-cyan-300 to-emerald-400 bg-clip-text text-transparent">ዘመናዊ የ AI ረዳት።</span>',
+        heroDesc: 'Orvix AI ፈጣን መልሶችን፣ Deep Research፣ የቀጥታ የድምጽ ውይይትን እና የምስል ትንተናን በእንግሊዝኛ እና በአማርኛ በ Telegram እና በዌብ ያቀርባል።',
+        ctaPrimary: 'Orvix AIን ክፈት', ctaSecondary: 'ሙከራውን እይ ↓',
+        m1: 'ፈጣን ምላሽ', m2: 'የማሰብ አቅም', m3: 'ምስል እና ምርምር',
+        capTitle: 'የሚፈልጉት ሁሉ፣ በንጹህ ዲዛይን።',
+        capSub: 'በማንኛውም ስልክ ላይ በፍጥነት እንዲሰራ በ Liquid Glass ዲዛይን የተገነባ።',
+        b1Title: 'የቀጥታ ድምጽ ውይይት',
+        b1Desc: 'ከድምጽ ጋር የሚንቀሳቀስ Orb፣ የሴት/ወንድ/ህፃናት ድምጽ ምርጫ፣ የቀጥታ ጽሑፍ (Captions) እና በንካት ማስቆም።',
+        b2Title: 'የምስል ትንተና',
+        b2Desc: 'ፎቶዎችን፣ የቤት ሥራዎችን ወይም ስክሪን ሹቶችን በመላክ ወዲያውኑ ዝርዝር ትንተና ያግኙ።',
+        b3Title: 'Liquid Glass መቆጣጠሪያ', b3Desc: 'የጽሑፍ መጠን፣ ብርሃን፣ Dark/Light ገጽታ እና Custom Instructions በቀላሉ ያስተካክሉ።',
+        b4Title: 'እንግሊዝኛ እና አማርኛ', b4Desc: 'በሁለቱም ቋንቋዎች የተሟላ የጽሑፍ እና የድምጽ ድጋፍ።',
+        b5Title: 'ሚስጥራዊ ታሪክ', b5Desc: 'ቻቶችዎ በራስዎ ስልክ ላይ ብቻ ይቀመጣሉ፤ ጊዜያዊ ቻትም አለው።',
+        playTitle: 'የድምጽ እና የሞድ ሙከራ',
+        playSub: 'የድምጽ አይነት መርጠው ክቡን በመንካት የቀጥታ ሁኔታውን ይሞክሩ።',
+        faqTitle: 'ተደጋጋሚ ጥያቄዎች',
+        q1: 'Orvix AI በነፃ ነው የሚሰራው?',
+        a1: 'አዎ! ማንኛውም ሰው ያለ ምንም ክፍያ ቻት ማድረግ፣ በድምጽ ማውራት እና ፎቶ መተንተን ይችላል።',
+        q2: 'በ Telegram እና በዌብ መጠቀም ይቻላል?',
+        a2: 'አዎ — በቀጥታ ከ Telegram ቦቱ ጋር፣ በ Mini App ወይም በዌብ መጠቀም ይችላሉ።',
+        q3: 'ውይይቶቼ ሚስጥራዊ ናቸው?',
+        a3: 'ቻቶችዎ በራስዎ ስልክ ላይ ብቻ ይቀመጣሉ፤ ጊዜያዊ ቻት ሲጠቀሙ ደግሞ ምንም አይቀመጥም።',
+        creatorBio: 'በረከት ተስፋዬ — የ11ኛ ክፍል (Class B) ተማሪ እና የ Orvix AI ፈጣሪ። ለአስተያየት ወይም ለትብብር በ Telegram ወይም በስልክ ያግኙኝ።'
+      }
+    };
+
+    const PHONE_SAMPLES = {
+      fast: {
+        label: 'Orvix Fast',
+        user: 'Summarize how solar panels generate electricity.',
+        ai: 'Photovoltaic cells absorb sunlight and knock electrons loose inside silicon layers, creating a direct electric current that an inverter converts for everyday use.'
+      },
+      thinking: {
+        label: 'Orvix Thinking',
+        user: 'Write a clean JS function to format a 10-digit phone number.',
+        ai: 'function formatPhone(n) { return n.replace(/\\D/g, "").replace(/(\\d{4})(\\d{3})(\\d{3})/, "$1-$2-$3"); } — strips non-digits and formats cleanly.'
+      },
+      deep: {
+        label: 'Orvix Deep Research',
+        user: 'Compare static websites vs. Progressive Web Apps.',
+        ai: '1. Reach: Static pages load instantly via any link. 2. App Experience: PWAs add home-screen install and full-screen UX. Best strategy: pair this landing page with your Orvix Web App.'
+      }
+    };
+
+    let lang = 'en', theme = 'dark', voice = 'Female (Hannah)', orbActive = false;
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2200);
+    }
+
+    function applyLang(l) {
+      lang = l;
+      const d = I18N[l];
+      document.getElementById('langToggleBtn').textContent = d.langBtn;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const k = el.getAttribute('data-i18n');
+        if (!d[k]) return;
+        if (k === 'heroTitle') el.innerHTML = d[k];
+        else el.textContent = d[k];
+      });
+    }
+
+    document.getElementById('langToggleBtn').addEventListener('click', () => applyLang(lang === 'en' ? 'am' : 'en'));
+    document.getElementById('themeToggleBtn').addEventListener('click', () => {
+      theme = theme === 'dark' ? 'light' : 'dark';
+      document.documentElement.classList.toggle('light', theme === 'light');
+      document.getElementById('themeToggleBtn').textContent = theme === 'dark' ? '☀️' : '🌙';
+    });
+
+    document.querySelectorAll('.pmode-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const key = btn.getAttribute('data-pmode');
+        const s = PHONE_SAMPLES[key];
+        document.querySelectorAll('.pmode-btn').forEach(b => {
+          b.classList.toggle('pill-active', b === btn);
+          b.classList.toggle('text-slate-400', b !== btn);
+        });
+        document.getElementById('phoneModeLabel').textContent = s.label;
+        document.getElementById('phoneUserMsg').textContent = s.user;
+        document.getElementById('phoneAiMsg').textContent = s.ai;
+      });
+    });
+
+    document.querySelectorAll('.vpreset-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        voice = btn.getAttribute('data-voice');
+        document.querySelectorAll('.vpreset-btn').forEach(b => b.classList.toggle('pill-active', b === btn));
+        if (orbActive) document.getElementById('playStatusSub').textContent = 'Speaking with ' + voice + '...';
+        showToast('Voice: ' + voice);
+      });
+    });
+
+    document.getElementById('demoOrbBtn').addEventListener('click', () => {
+      orbActive = !orbActive;
+      document.getElementById('demoOrbBtn').classList.toggle('speaking', orbActive);
+      document.getElementById('orbLabel').textContent = orbActive ? 'SPEAKING • TAP TO STOP' : 'TAP ORB TO PREVIEW';
+      document.getElementById('playStatusTitle').textContent = orbActive ? 'Orvix Live Active' : 'Ready to preview';
+      document.getElementById('playStatusSub').textContent = orbActive ? 'Speaking with ' + voice + '...' : 'Tap the orb on the right to simulate live speech';
+    });
+
+    document.querySelectorAll('.faq-trigger').forEach(btn => {
+      btn.addEventListener('click', () => btn.closest('.faq-item').classList.toggle('open'));
+    });
+
+    document.getElementById('copyPhoneBtn').addEventListener('click', () => {
+      const p = '0960934894';
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(p).then(() => showToast('Copied: ' + p)).catch(() => showToast(p));
+      } else {
+        showToast(p);
+      }
+    });
+
+    applyLang('en');
+  </script>
+</body>
+</html>
