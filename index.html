@@ -2,660 +2,1763 @@
 <html lang="en" class="dark">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Orvix AI — Next-Gen Intelligence on Telegram &amp; Web</title>
-  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Orvix AI</title>
+  <link rel="manifest" href="https://orvix-ai-bot.bereket1643.workers.dev/manifest.json" />
+  <link rel="apple-touch-icon" href="https://orvix-ai-bot.bereket1643.workers.dev/logo.png" />
+  <meta name="theme-color" content="#070b12" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github-dark.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/highlight.min.js"></script>
   <style>
     :root {
-      --bg: #030712;
-      --card: rgba(17, 24, 39, 0.55);
-      --card-hover: rgba(30, 41, 59, 0.68);
-      --border: rgba(255, 255, 255, 0.09);
-      --border-hi: rgba(56, 189, 248, 0.4);
-      --text: #f9fafb;
-      --muted: #9ca3af;
-      --grid: rgba(255, 255, 255, 0.03);
+      --bg-main: #212121;
+      --bg-sidebar: #171717;
+      --bg-composer: #2f2f2f;
+      --bg-user-msg: #2f2f2f;
+      --bg-hover: #2a2a2a;
+      --bg-card: #2a2a2a;
+      --border-subtle: rgba(255, 255, 255, 0.1);
+      --text-primary: #ececec;
+      --text-secondary: #b4b4b4;
+      --text-muted: #8e8e8e;
+      --accent-btn: #ffffff;
+      --accent-btn-text: #000000;
+      --code-bg: #0d0d0d;
+      --code-header: #2f2f2f;
+      --danger: #ef4444;
     }
     html.light {
-      --bg: #f8fafc;
-      --card: rgba(255, 255, 255, 0.85);
-      --card-hover: rgba(255, 255, 255, 0.96);
-      --border: rgba(15, 23, 42, 0.09);
-      --border-hi: rgba(2, 132, 199, 0.45);
-      --text: #0f172a;
-      --muted: #475569;
-      --grid: rgba(15, 23, 42, 0.035);
+      --bg-main: #ffffff;
+      --bg-sidebar: #f9f9f9;
+      --bg-composer: #f4f4f4;
+      --bg-user-msg: #f4f4f4;
+      --bg-hover: #ececec;
+      --bg-card: #f4f4f4;
+      --border-subtle: rgba(0, 0, 0, 0.1);
+      --text-primary: #0d0d0d;
+      --text-secondary: #5d5d5d;
+      --text-muted: #8e8e8e;
+      --accent-btn: #000000;
+      --accent-btn-text: #ffffff;
+      --code-bg: #1e1e1e;
+      --code-header: #2d2d2d;
     }
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: var(--bg);
-      color: var(--text);
-      overflow-x: hidden;
-    }
-    .mono { font-family: 'JetBrains Mono', monospace; }
-    .bg-grid {
-      background-image:
-        linear-gradient(to right, var(--grid) 1px, transparent 1px),
-        linear-gradient(to bottom, var(--grid) 1px, transparent 1px);
-      background-size: 44px 44px;
-    }
-    .hero-glow {
-      position: absolute;
-      inset: -120px 0 auto 0;
-      height: 540px;
-      background:
-        radial-gradient(ellipse 55% 45% at 50% 25%, rgba(56, 189, 248, 0.2), transparent 70%),
-        radial-gradient(ellipse 40% 35% at 25% 35%, rgba(16, 185, 129, 0.14), transparent 70%),
-        radial-gradient(ellipse 40% 35% at 75% 35%, rgba(139, 92, 246, 0.14), transparent 70%);
-      pointer-events: none;
-      z-index: 0;
-    }
-    .glass-panel {
-      background: var(--card);
-      border: 1px solid var(--border);
-      backdrop-filter: blur(22px);
-      -webkit-backdrop-filter: blur(22px);
-      transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
-    }
-    .glass-panel:hover {
-      border-color: var(--border-hi);
-      background: var(--card-hover);
-    }
-    .nav-blur {
-      background: rgba(3, 7, 18, 0.72);
-      border-bottom: 1px solid var(--border);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-    }
-    html.light .nav-blur { background: rgba(248, 250, 252, 0.82); }
-    .cta-primary {
-      background: linear-gradient(135deg, #38bdf8 0%, #10b981 100%);
-      color: #031520;
-      box-shadow: 0 0 0 1px rgba(255,255,255,0.18) inset, 0 12px 32px -6px rgba(56, 189, 248, 0.45);
-      transition: transform 0.16s ease, box-shadow 0.2s ease;
-    }
-    .cta-primary:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 0 0 1px rgba(255,255,255,0.28) inset, 0 18px 40px -6px rgba(56, 189, 248, 0.6);
-    }
-    .phone-frame {
-      border-radius: 38px;
-      padding: 10px;
-      background: linear-gradient(145deg, rgba(255,255,255,0.16), rgba(255,255,255,0.03));
-      box-shadow: 0 30px 90px -20px rgba(0, 0, 0, 0.75), 0 0 50px -15px rgba(56, 189, 248, 0.25);
-    }
-    .phone-screen {
-      border-radius: 30px;
-      background: #090d16;
-      color: #f8fafc;
-      border: 1px solid rgba(255,255,255,0.08);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg-main);
+      color: var(--text-primary);
+      height: 100dvh;
       overflow: hidden;
+      display: flex;
     }
-    .orb-live {
-      width: 118px; height: 118px; border-radius: 9999px;
-      background: radial-gradient(circle at 32% 28%, #ffffff 0%, #bae6fd 24%, #38bdf8 56%, #0284c7 84%, #1e3a8a 100%);
-      box-shadow: 0 0 55px rgba(56, 189, 248, 0.55), inset 0 10px 24px rgba(255, 255, 255, 0.6);
-      transition: transform 0.2s ease, box-shadow 0.25s ease;
+    button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+    input, textarea, select { font-family: inherit; color: inherit; }
+
+    /* Sidebar */
+    .sidebar-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 40;
+      opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
     }
-    .orb-live.speaking {
-      animation: orbSpeak 0.55s infinite alternate ease-in-out;
-      box-shadow: 0 0 85px rgba(56, 189, 248, 0.85), inset 0 10px 26px rgba(255, 255, 255, 0.7);
+    .sidebar-overlay.open { opacity: 1; pointer-events: auto; }
+    .sidebar {
+      position: fixed; top: 0; left: 0; bottom: 0; width: 270px; max-width: 82vw;
+      background: var(--bg-sidebar); z-index: 50;
+      transform: translateX(-100%); transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex; flex-direction: column; border-right: 1px solid var(--border-subtle);
+      padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom);
     }
-    @keyframes orbSpeak {
-      0% { transform: scale(0.98); border-radius: 50%; }
-      100% { transform: scale(1.1); border-radius: 47% 53% 49% 51% / 52% 48% 52% 48%; }
+    .sidebar.open { transform: translateX(0); }
+    @media (min-width: 768px) {
+      .sidebar { position: relative; transform: none; flex-shrink: 0; }
+      .sidebar.collapsed { display: none; }
+      .sidebar-overlay { display: none !important; }
     }
-    .muted { color: var(--muted); }
-    .pill-active {
-      background: rgba(56, 189, 248, 0.16) !important;
-      border-color: rgba(56, 189, 248, 0.55) !important;
-      color: #38bdf8 !important;
+    .sidebar-top { padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+    .sidebar-actions { display: flex; align-items: center; justify-content: space-between; }
+    .icon-btn {
+      width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center;
+      color: var(--text-secondary); transition: background 0.15s;
     }
-    .faq-body { display: none; }
-    .faq-item.open .faq-body { display: block; }
-    .faq-item.open .faq-icon { transform: rotate(45deg); }
-    .toast {
-      position: fixed; bottom: 24px; left: 50%;
-      transform: translateX(-50%) translateY(16px);
-      opacity: 0; pointer-events: none; transition: all 0.22s ease; z-index: 90;
+    .icon-btn:hover, .icon-btn:active { background: var(--bg-hover); color: var(--text-primary); }
+    .search-box {
+      width: 100%; background: var(--bg-composer); border: 1px solid var(--border-subtle);
+      border-radius: 10px; padding: 8px 12px; font-size: 13px; outline: none;
     }
-    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-  </style>
+    .sidebar-list { flex: 1; overflow-y: auto; padding: 4px 8px; }
+    .group-label {
+      font-size: 11px; font-weight: 600; color: var(--text-muted);
+      padding: 12px 10px 6px; text-transform: uppercase; letter-spacing: 0.03em;
+    }
+    .chat-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 9px 10px; border-radius: 8px; font-size: 14px; color: var(--text-primary);
+      cursor: pointer; transition: background 0.12s; gap: 6px;
+    }
+    .chat-item:hover, .chat-item.active { background: var(--bg-hover); }
+    .chat-item-title {
+      flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .chat-item-del {
+      opacity: 0.6; padding: 4px; border-radius: 4px; font-size: 12px;
+    }
+    .chat-item-del:hover { opacity: 1; color: var(--danger); }
+    .sidebar-footer {
+      padding: 10px 12px; border-top: 1px solid var(--border-subtle);
+      display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    }
+    .user-pill { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+    .avatar {
+      width: 32px; height: 32px; border-radius: 50%; background: #10a37f; color: #fff;
+      font-weight: 600; font-size: 13px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .user-name { font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    /* Main Area */
+    .main { flex: 1; display: flex; flex-direction: column; min-width: 0; height: 100dvh; position: relative; }
+    .topbar {
+      height: 52px; padding: 0 12px; display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0; padding-top: env(safe-area-inset-top);
+    }
+    .topbar-left { display: flex; align-items: center; gap: 4px; }
+    .model-dropdown-wrap { position: relative; }
+    .model-btn {
+      display: flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 10px;
+      font-size: 16px; font-weight: 600; color: var(--text-primary);
+    }
+    .model-btn:hover { background: var(--bg-hover); }
+    .model-menu {
+      position: absolute; top: 100%; left: 0; margin-top: 4px; width: 260px;
+      background: var(--bg-composer); border: 1px solid var(--border-subtle); border-radius: 14px;
+      padding: 6px; z-index: 60; box-shadow: 0 10px 30px rgba(0,0,0,0.35); display: none;
+    }
+    .model-menu.open { display: block; }
+    .model-option {
+      width: 100%; text-align: left; padding: 10px 12px; border-radius: 10px;
+      display: flex; flex-direction: column; gap: 2px;
+    }
+    .model-option:hover, .model-option.selected { background: var(--bg-hover); }
+    .model-option-name { font-size: 14px; font-weight: 600; }
+    .model-option-desc { font-size: 12px; color: var(--text-secondary); }
+    .topbar-right { display: flex; align-items: center; gap: 4px; }
+    .temp-badge.active { color: #10a37f; background: rgba(16, 163, 127, 0.15); }
+
+    /* Messages */
+    .chat-scroll {
+      flex: 1; overflow-y: auto; padding: 12px 16px 24px;
+      display: flex; flex-direction: column; gap: 20px; scroll-behavior: smooth;
+    }
+    .chat-container { width: 100%; max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+    .empty-state {
+      flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; padding: 24px 16px; gap: 20px; max-width: 680px; margin: 0 auto; width: 100%;
+    }
+    .gpt-logo {
+      width: 48px; height: 48px; border-radius: 50%; border: 1px solid var(--border-subtle);
+      display: flex; align-items: center; justify-content: center; background: var(--bg-composer);
+    }
+    .empty-title { font-size: 24px; font-weight: 600; }
+    .suggestions {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; width: 100%; max-width: 540px;
+    }
+    @media (max-width: 500px) { .suggestions { grid-template-columns: 1fr; } }
+    .suggestion-card {
+      text-align: left; padding: 12px 14px; border-radius: 14px;
+      border: 1px solid var(--border-subtle); background: transparent;
+      transition: background 0.15s;
+    }
+    .suggestion-card:hover { background: var(--bg-hover); }
+    .suggestion-card strong { display: block; font-size: 13px; margin-bottom: 2px; }
+    .suggestion-card span { font-size: 12px; color: var(--text-secondary); }
+
+    .msg-row { display: flex; flex-direction: column; width: 100%; }
+    .msg-row.user { align-items: flex-end; }
+    .msg-bubble-user {
+      background: var(--bg-user-msg); color: var(--text-primary);
+      padding: 10px 16px; border-radius: 20px; max-width: 82%;
+      font-size: 15px; line-height: 1.5; white-space: pre-wrap; word-break: break-word;
+    }
+    .msg-user-actions { display: flex; gap: 6px; margin-top: 4px; opacity: 0.7; }
+    .msg-assistant-wrap { display: flex; gap: 12px; align-items: flex-start; width: 100%; }
+    .assistant-avatar {
+      width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--border-subtle);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;
+      background: var(--bg-main);
+    }
+    .assistant-content { flex: 1; min-width: 0; font-size: 15px; line-height: 1.65; }
+    .assistant-content p { margin-bottom: 12px; }
+    .assistant-content p:last-child { margin-bottom: 0; }
+    .assistant-content ul, .assistant-content ol { margin: 8px 0 12px 22px; }
+    .assistant-content li { margin-bottom: 4px; }
+    .assistant-content h1, .assistant-content h2, .assistant-content h3 { margin: 16px 0 8px; font-weight: 600; }
+    .assistant-content table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; overflow-x: auto; display: block; }
+    .assistant-content th, .assistant-content td { border: 1px solid var(--border-subtle); padding: 8px 10px; text-align: left; }
+    .assistant-content th { background: var(--bg-composer); }
+    .assistant-content blockquote { border-left: 3px solid var(--text-muted); padding-left: 12px; color: var(--text-secondary); margin: 10px 0; }
+    .assistant-content code:not(pre code) {
+      background: var(--bg-composer); padding: 2px 6px; border-radius: 5px; font-size: 13px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+    .code-block-wrap { margin: 12px 0; border-radius: 10px; overflow: hidden; border: 1px solid var(--border-subtle); background: var(--code-bg); }
+    .code-block-header {
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--code-header); padding: 6px 12px; font-size: 12px; color: #d4d4d4;
+    }
+    .copy-code-btn { font-size: 12px; color: #d4d4d4; display: flex; align-items: center; gap: 4px; padding: 2px 6px; border-radius: 4px; }
+    .copy-code-btn:hover { background: rgba(255,255,255,0.1); }
+    .code-block-wrap pre { padding: 12px; overflow-x: auto; font-size: 13px; line-height: 1.45; }
+    .msg-actions { display: flex; align-items: center; gap: 4px; margin-top: 8px; color: var(--text-muted); }
+    .msg-action-btn {
+      padding: 5px 7px; border-radius: 6px; font-size: 12px; display: flex; align-items: center; gap: 4px;
+    }
+    .msg-action-btn:hover { background: var(--bg-hover); color: var(--text-primary); }
+
+    /* Composer */
+    .composer-area {
+      padding: 6px 12px calc(10px + env(safe-area-inset-bottom));
+      max-width: 780px; width: 100%; margin: 0 auto; flex-shrink: 0;
+    }
+    .attachment-preview {
+      display: none; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; padding: 0 4px;
+    }
+    .attachment-preview.has-items { display: flex; }
+    .att-chip {
+      display: flex; align-items: center; gap: 6px; background: var(--bg-composer);
+      border: 1px solid var(--border-subtle); border-radius: 10px; padding: 6px 10px; font-size: 12px;
+    }
+    .att-chip img { width: 28px; height: 28px; border-radius: 6px; object-fit: cover; }
+    .composer-box {
+      background: var(--bg-composer); border-radius: 26px; padding: 8px 10px;
+      display: flex; align-items: flex-end; gap: 6px; border: 1px solid var(--border-subtle);
+    }
+    .composer-input {
+      flex: 1; background: transparent; border: none; outline: none; resize: none;
+      font-size: 15px; line-height: 1.45; max-height: 160px; padding: 6px 4px;
+    }
+    .send-btn {
+      width: 34px; height: 34px; border-radius: 50%; background: var(--accent-btn);
+      color: var(--accent-btn-text); display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: opacity 0.15s;
+    }
+    .send-btn:disabled { opacity: 0.35; cursor: default; }
+    .mic-btn.recording { color: var(--danger); animation: pulse 1.2s infinite; }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+    .disclaimer { text-align: center; font-size: 11px; color: var(--text-muted); margin-top: 6px; }
+
+    /* Modal */
+    .modal-backdrop {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 80;
+      display: none; align-items: center; justify-content: center; padding: 16px;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal {
+      background: var(--bg-sidebar); border: 1px solid var(--border-subtle); border-radius: 18px;
+      width: 100%; max-width: 460px; max-height: 85dvh; overflow-y: auto; padding: 20px;
+      display: flex; flex-direction: column; gap: 14px;
+    }
+    .modal-header { display: flex; align-items: center; justify-content: space-between; font-size: 17px; font-weight: 600; }
+    .field-label { font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 5px; display: block; }
+    .field-input, .field-select, .field-textarea {
+      width: 100%; background: var(--bg-composer); border: 1px solid var(--border-subtle);
+      border-radius: 10px; padding: 9px 12px; font-size: 14px; outline: none;
+    }
+    .field-textarea { min-height: 76px; resize: vertical; }
+    .btn-primary {
+      background: var(--accent-btn); color: var(--accent-btn-text); padding: 10px 16px;
+      border-radius: 10px; font-weight: 600; font-size: 14px;
+    }
+    .btn-danger {
+      background: rgba(239,68,68,0.15); color: var(--danger); padding: 10px 16px;
+      border-radius: 10px; font-weight: 600; font-size: 14px;
+    }
+    .typing-dot {
+      display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+      background: var(--text-primary); animation: pulse 1s infinite; margin-left: 4px;
+    }
+
+    /* Voice Conversation Mode Overlay (ChatGPT / Gemini Live Style) */
+    .voice-overlay {
+      position: fixed; inset: 0; z-index: 90;
+      background: radial-gradient(circle at 50% 45%, #0c192c 0%, #05080f 70%, #020306 100%);
+      color: #f8fafc;
+      display: none; flex-direction: column; align-items: center; justify-content: space-between;
+      padding: calc(18px + env(safe-area-inset-top)) 20px calc(32px + env(safe-area-inset-bottom));
+    }
+    .voice-overlay.open { display: flex; }
+    .voice-top { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .voice-status-badge {
+      font-size: 12px; font-weight: 600; color: #e2e8f0;
+      background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
+      padding: 6px 12px; border-radius: 999px; backdrop-filter: blur(14px);
+    }
+    .voice-center {
+      flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 28px; width: 100%; max-width: 400px; text-align: center;
+    }
+    .orb-stage {
+      position: relative; width: 240px; height: 240px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .orb-halo {
+      position: absolute; inset: 12px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(56,189,248,0.35), rgba(99,102,241,0.15) 55%, transparent 72%);
+      filter: blur(18px); transition: transform 0.1s ease-out, opacity 0.2s ease;
+      pointer-events: none;
+    }
+    .voice-orb {
+      width: 174px; height: 174px; border-radius: 50%; position: relative; cursor: pointer;
+      background:
+        radial-gradient(circle at 30% 28%, rgba(255,255,255,0.96) 0%, rgba(186,230,253,0.9) 22%, rgba(56,189,248,0.92) 52%, rgba(37,99,235,0.95) 82%, rgba(30,58,138,1) 100%);
+      box-shadow: 0 0 65px rgba(56, 189, 248, 0.45), inset 0 -18px 36px rgba(15,23,42,0.45), inset 0 12px 28px rgba(255,255,255,0.55);
+      transition: transform 0.09s ease-out, border-radius 0.4s ease, box-shadow 0.25s ease;
+    }
+    .voice-orb.listening { animation: liveBreathe 3.2s infinite ease-in-out; }
+    .voice-orb.thinking {
+      background:
+        radial-gradient(circle at 32% 28%, #ffffff 0%, #c7d2fe 28%, #818cf8 60%, #4338ca 100%);
+      box-shadow: 0 0 80px rgba(129, 140, 248, 0.65), inset 0 10px 24px rgba(255,255,255,0.5);
+      animation: liveMorph 1.3s infinite ease-in-out;
+    }
+    .voice-orb.speaking {
+      background:
+        radial-gradient(circle at 32% 28%, #ffffff 0%, #bae6fd 24%, #38bdf8 55%, #0284c7 85%, #0369a1 100%);
+      box-shadow: 0 0 95px rgba(56, 189, 248, 0.8), inset 0 12px 26px rgba(255,255,255,0.6);
+      animation: liveSpeak 0.55s infinite alternate ease-in-out;
+    }
+    @keyframes liveBreathe {
+      0%,100% { transform: scale(1); border-radius: 50%; }
+      50% { transform: scale(1.045); border-radius: 48% 52% 51% 49% / 50% 48% 52% 50%; }
+    }
+    @keyframes liveMorph {
+      0% { transform: scale(0.96) rotate(0deg); border-radius: 46% 54% 52% 48% / 52% 46% 54% 48%; }
+      50% { transform: scale(1.05) rotate(180deg); border-radius: 54% 46% 48% 52% / 48% 54% 46% 52%; }
+      100% { transform: scale(0.96) rotate(360deg); border-radius: 46% 54% 52% 48% / 52% 46% 54% 48%; }
+    }
+    @keyframes liveSpeak {
+      0% { transform: scale(0.99); border-radius: 50%; }
+      100% { transform: scale(1.11); border-radius: 47% 53% 49% 51% / 52% 48% 52% 48%; }
+    }
+    .voice-caption {
+      font-size: 17px; line-height: 1.5; color: rgba(248,250,252,0.9);
+      min-height: 52px; max-height: 130px; overflow-y: auto; padding: 0 16px;
+      font-weight: 400; letter-spacing: -0.01em; transition: opacity 0.2s ease;
+    }
+    .voice-caption.hidden { opacity: 0; pointer-events: none; }
+    .live-hint { font-size: 12px; color: rgba(148,163,184,0.75); letter-spacing: 0.02em; }
+    .voice-fallback-row { width: 100%; max-width: 380px; display: none; gap: 8px; margin-bottom: 14px; }
+    .voice-fallback-row.open { display: flex; }
+    .voice-controls { display: flex; align-items: center; gap: 18px; }
+    .voice-ctrl-btn {
+      width: 56px; height: 56px; border-radius: 50%; background: rgba(255,255,255,0.09);
+      border: 1px solid rgba(255,255,255,0.14); display: flex; align-items: center; justify-content: center;
+      color: #f8fafc; font-size: 19px; backdrop-filter: blur(14px); transition: background 0.15s, transform 0.1s;
+    }
+    .voice-ctrl-btn:active { transform: scale(0.93); }
+    .voice-ctrl-btn.end { background: #ef4444; color: #fff; border-color: transparent; width: 62px; height: 62px; }
+    .voice-ctrl-btn.muted { background: rgba(239, 68, 68, 0.28); color: #fca5a5; }
+    .voice-ctrl-btn.on { background: rgba(56, 189, 248, 0.24); border-color: rgba(56, 189, 248, 0.45); color: #7dd3fc; }
+
+    .composer-box {
+      box-shadow: 0 0 24px rgba(56, 189, 248, 0.22), 0 0 48px rgba(139, 92, 246, 0.14), 0 8px 30px rgba(0, 0, 0, 0.25) !important;
+      border: 1px solid rgba(125, 211, 252, 0.35) !important;
+      transition: box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+    .composer-box:focus-within {
+      box-shadow: 0 0 32px rgba(56, 189, 248, 0.42), 0 0 60px rgba(16, 163, 127, 0.24) !important;
+      border-color: rgba(56, 189, 248, 0.65) !important;
+    }
+
+    /* Pro Launch Splash Screen */
+    .splash-screen {
+      position: fixed; inset: 0; z-index: 120;
+      background: radial-gradient(circle at 50% 40%, #102536 0%, #0b0f14 70%, #07090d 100%);
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px;
+      transition: opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1), transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .splash-screen.hide { opacity: 0; transform: scale(1.04); pointer-events: none; }
+    .splash-ring {
+      width: 96px; height: 96px; border-radius: 50%; padding: 4px;
+      background: conic-gradient(from 0deg, #38bdf8, #10a37f, #818cf8, #38bdf8);
+      box-shadow: 0 0 50px rgba(56, 189, 248, 0.45);
+      animation: splashPop 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .splash-inner {
+      width: 100%; height: 100%; border-radius: 50%; overflow: hidden; background: #0b0f14;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .splash-inner img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; }
+    .splash-title {
+      font-size: 24px; font-weight: 700; letter-spacing: 0.02em; color: #f8fafc;
+      opacity: 0; animation: splashFadeUp 0.55s 0.2s ease forwards;
+    }
+    .splash-bar {
+      width: 120px; height: 3px; border-radius: 999px; background: rgba(255,255,255,0.12); overflow: hidden;
+      opacity: 0; animation: splashFadeUp 0.5s 0.3s ease forwards;
+    }
+    .splash-bar-fill {
+      width: 45%; height: 100%; border-radius: 999px;
+      background: linear-gradient(90deg, #10a37f, #38bdf8);
+      animation: splashSlide 1.1s infinite ease-in-out;
+    }
+    @keyframes splashPop { 0% { opacity: 0; transform: scale(0.6); } 100% { opacity: 1; transform: scale(1); } }
+    @keyframes splashFadeUp { 0% { opacity: 0; transform: translateY(10px); } 100% { opacity: 1; transform: translateY(0); } }
+    @keyframes splashSlide { 0% { transform: translateX(-100%); } 100% { transform: translateX(260%); } }
+
+    .gpt-logo { width: 72px !important; height: 72px !important; flex-shrink: 0; border-radius: 50%; overflow: hidden; }
+    .gpt-logo img { width: 72px !important; height: 72px !important; object-fit: cover; border-radius: 50%; display: block; }
+    .analysing-pill { display: inline-flex; align-items: center; gap: 10px; padding: 8px 14px; border-radius: 999px; background: var(--glass-bg); border: 1px solid var(--glass-border); font-size: 13px; font-weight: 500; color: var(--text-secondary); backdrop-filter: blur(12px); }
+    .avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+    .user-meta { display: flex; flex-direction: column; min-width: 0; }
+    .user-handle { font-size: 11px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .about-creator { padding: 10px 12px 12px; border-top: 1px solid var(--border-subtle); display: flex; flex-direction: column; gap: 6px; font-size: 12px; }
+    .about-title { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; }
+    .about-links { display: flex; gap: 8px; flex-wrap: wrap; }
+    .about-link { display: inline-flex; align-items: center; gap: 5px; padding: 5px 10px; border-radius: 999px; background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-primary); text-decoration: none; font-size: 12px; font-weight: 500; }
+    .sidebar, .model-menu, .modal { background: rgba(20, 24, 32, 0.78) !important; backdrop-filter: blur(22px) !important; -webkit-backdrop-filter: blur(22px) !important; border-color: var(--glass-border) !important; }
+    html.light .sidebar, html.light .model-menu, html.light .modal { background: rgba(255, 255, 255, 0.78) !important; }
+    .seg-group { display: flex; gap: 8px; }
+    .seg-btn { flex: 1; padding: 9px 12px; border-radius: 12px; font-size: 13px; font-weight: 600; background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-secondary); backdrop-filter: blur(12px); transition: all 0.15s; }
+    .seg-btn.active { background: var(--accent-btn); color: var(--accent-btn-text); border-color: transparent; }
+
+    .auth-gate {
+      position: fixed; inset: 0; z-index: 110;
+      background: radial-gradient(circle at 50% 35%, #0e2238 0%, #060911 70%, #030508 100%);
+      display: none; align-items: center; justify-content: center; padding: 20px;
+    }
+    .auth-gate.open { display: flex; }
+    .auth-card {
+      width: 100%; max-width: 400px; border-radius: 24px; padding: 26px 22px;
+      background: rgba(17, 24, 39, 0.78); border: 1px solid rgba(125, 211, 252, 0.22);
+      backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px);
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.65);
+      display: flex; flex-direction: column; gap: 16px; color: #f8fafc;
+    }
+    .auth-tabs { display: flex; gap: 8px; background: rgba(255,255,255,0.06); padding: 4px; border-radius: 14px; }
+    .auth-tab { flex: 1; padding: 8px; border-radius: 10px; font-size: 13px; font-weight: 600; color: #94a3b8; }
+    .auth-tab.active { background: linear-gradient(135deg, #38bdf8, #10a37f); color: #031520; }
+    .auth-err { font-size: 12px; color: #fca5a5; min-height: 16px; }
+    .logout-btn { font-size: 11px; color: #f87171; padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(248,113,113,0.3); }
+  </style>  </style>  </style>  </style>
 </head>
-<body class="bg-grid antialiased selection:bg-sky-400/30">
-  <div class="hero-glow"></div>
-
-  <!-- Top Navigation -->
-  <header class="nav-blur sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
-      <a href="#top" class="flex items-center gap-2.5 shrink-0">
-        <img id="navLogo" src="https://raw.githubusercontent.com/bereket1643/orvix-ai/main/logo.png" alt="Orvix AI" class="w-9 h-9 rounded-full object-cover ring-1 ring-sky-400/40 bg-slate-950" />
-        <div class="flex items-center gap-2">
-          <span class="font-extrabold text-base sm:text-lg tracking-tight">Orvix AI</span>
-          <span class="hidden sm:inline-block mono text-[10px] px-2 py-0.5 rounded-full bg-sky-500/15 text-sky-400 border border-sky-400/25">v2.0</span>
-        </div>
-      </a>
-
-      <nav class="hidden md:flex items-center gap-7 text-sm font-medium muted">
-        <a href="#capabilities" data-i18n="navCap" class="hover:text-sky-400 transition">Capabilities</a>
-        <a href="#playground" data-i18n="navPlay" class="hover:text-sky-400 transition">Live Demo</a>
-        <a href="#faq" data-i18n="navFaq" class="hover:text-sky-400 transition">FAQ</a>
-        <a href="#creator" data-i18n="navCreator" class="hover:text-sky-400 transition">Creator</a>
-      </nav>
-
-      <div class="flex items-center gap-2">
-        <button id="langToggleBtn" type="button" class="glass-panel px-3 py-1.5 rounded-full text-xs font-semibold">አማርኛ</button>
-        <button id="themeToggleBtn" type="button" aria-label="Toggle theme" class="glass-panel w-9 h-9 rounded-full flex items-center justify-center text-sm">☀️</button>
-        <a href="https://orvix-ai-bot.bereket1643.workers.dev" target="_blank" rel="noopener noreferrer" data-i18n="navLaunch" class="cta-primary px-4 py-2 rounded-full text-xs sm:text-sm font-bold">
-          Open App
-        </a>
+<body>
+  <div id="splashScreen" class="splash-screen">
+    <div class="splash-ring">
+      <div class="splash-inner">
+        <img src="https://orvix-ai-bot.bereket1643.workers.dev/logo.png" alt="Orvix AI" onerror="this.style.display='none'"/>
       </div>
     </div>
-  </header>
-
-  <!-- Split Hero with Interactive Phone Mockup -->
-  <section id="top" class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pt-12 pb-16 lg:pt-20 lg:pb-24">
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-      <!-- Left Copy -->
-      <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
-        <div class="glass-panel inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full text-xs font-medium">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span data-i18n="heroBadge" class="muted">Powered by Edge AI • 100% Free Access</span>
+    <div class="splash-title">Orvix AI</div>
+    <div class="splash-bar"><div class="splash-bar-fill"></div></div>
+  </div>
+    <div id="authGate" class="auth-gate">
+    <div class="auth-card">
+      <div style="display:flex; flex-direction:column; align-items:center; gap:10px; text-align:center;">
+        <img src="https://orvix-ai-bot.bereket1643.workers.dev/logo.png" alt="Orvix AI" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid rgba(56,189,248,0.45);" onerror="this.style.display='none'"/>
+        <div style="font-size:22px; font-weight:800;">Welcome to Orvix AI</div>
+        <div style="font-size:13px; color:#94a3b8;">Sign in or create a free account to continue</div>
+      </div>
+      <div class="auth-tabs">
+        <button id="tabLogin" type="button" class="auth-tab active" onclick="setAuthMode('login')">Log In</button>
+        <button id="tabSignup" type="button" class="auth-tab" onclick="setAuthMode('signup')">Sign Up</button>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <div id="authNameWrap" style="display:none;">
+          <label class="field-label" style="color:#cbd5e1;">Full Name</label>
+          <input id="authName" class="field-input" style="background:rgba(255,255,255,0.08);color:#fff;" type="text" placeholder="Bereket Tesfaye" />
         </div>
-
-        <h1 data-i18n="heroTitle" class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.08]">
-          The AI workspace built for <span class="bg-gradient-to-r from-sky-400 via-cyan-300 to-emerald-400 bg-clip-text text-transparent">speed, voice &amp; vision.</span>
-        </h1>
-
-        <p data-i18n="heroDesc" class="muted text-base sm:text-lg leading-relaxed max-w-2xl mx-auto lg:mx-0">
-          Orvix AI brings instant answers, deep multi-step research, real-time voice conversations, and photo analysis straight into Telegram and the web — in English and Amharic.
-        </p>
-
-        <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 pt-1">
-          <a href="https://orvix-ai-bot.bereket1643.workers.dev" target="_blank" rel="noopener noreferrer" data-i18n="ctaPrimary" class="cta-primary px-7 py-3.5 rounded-2xl text-sm sm:text-base font-bold w-full sm:w-auto text-center">
-            Launch Orvix AI Now
-          </a>
-          <a href="#playground" data-i18n="ctaSecondary" class="glass-panel px-7 py-3.5 rounded-2xl text-sm sm:text-base font-semibold w-full sm:w-auto text-center">
-            Try Interactive Demo ↓
-          </a>
+        <div>
+          <label class="field-label" style="color:#cbd5e1;">Email</label>
+          <input id="authEmail" class="field-input" style="background:rgba(255,255,255,0.08);color:#fff;" type="email" placeholder="you@example.com" />
         </div>
-
-        <!-- Technical Spec Metrics -->
-        <div class="grid grid-cols-3 gap-3 pt-4 max-w-lg mx-auto lg:mx-0">
-          <div class="glass-panel rounded-2xl p-3.5">
-            <div class="mono text-base sm:text-lg font-bold text-sky-400">&lt;0.4s</div>
-            <div data-i18n="m1" class="text-[11px] muted mt-0.5">Fast Mode Latency</div>
-          </div>
-          <div class="glass-panel rounded-2xl p-3.5">
-            <div class="mono text-base sm:text-lg font-bold text-emerald-400">120B</div>
-            <div data-i18n="m2" class="text-[11px] muted mt-0.5">Reasoning Engine</div>
-          </div>
-          <div class="glass-panel rounded-2xl p-3.5">
-            <div class="mono text-base sm:text-lg font-bold text-violet-400">27B VL</div>
-            <div data-i18n="m3" class="text-[11px] muted mt-0.5">Vision &amp; Research</div>
-          </div>
+        <div>
+          <label class="field-label" style="color:#cbd5e1;">Password</label>
+          <input id="authPassword" class="field-input" style="background:rgba(255,255,255,0.08);color:#fff;" type="password" placeholder="At least 6 characters" onkeydown="if(event.key==='Enter') submitAuth()" />
         </div>
       </div>
+      <div id="authErr" class="auth-err"></div>
+      <button id="authSubmitBtn" type="button" class="btn-primary" style="background:linear-gradient(135deg,#38bdf8,#10a37f);color:#031520;padding:12px;" onclick="submitAuth()">Log In</button>
+    </div>
+  </div>
 
-      <!-- Right Live Phone Mockup -->
-      <div class="lg:col-span-5 flex justify-center">
-        <div class="phone-frame w-full max-w-[350px]">
-          <div class="phone-screen">
-            <!-- Phone Top Bar -->
-            <div class="px-4 py-3 border-b border-white/10 flex items-center justify-between bg-white/[0.03]">
-              <div class="flex items-center gap-2">
-                <img id="phoneLogo" src="https://raw.githubusercontent.com/bereket1643/orvix-ai/main/logo.png" alt="Orvix" class="w-6 h-6 rounded-full object-cover" />
-                <span id="phoneModeLabel" class="text-xs font-bold">Orvix Fast</span>
-              </div>
-              <span class="mono text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400">LIVE</span>
-            </div>
-
-            <!-- Live Interactive Orvix AI Chat -->
-            <div class="p-3.5 flex flex-col justify-between h-[330px] text-xs">
-              <div id="liveWebMsgs" class="flex-1 overflow-y-auto space-y-2.5 pr-1">
-                <div class="flex items-start gap-2">
-                  <div class="w-5 h-5 rounded-full bg-gradient-to-tr from-sky-400 to-emerald-400 shrink-0 mt-0.5"></div>
-                  <div class="text-slate-200 leading-relaxed bg-white/[0.04] border border-white/10 px-3 py-2 rounded-2xl rounded-tl-sm">
-                    Hi! I'm Orvix AI. Ask me anything right here on the website!
-                  </div>
-                </div>
-              </div>
-
-              <div class="pt-2.5 border-t border-white/10 space-y-2">
-                <div class="flex items-center gap-1.5">
-                  <button type="button" data-pmode="fast" class="pmode-btn pill-active flex-1 py-1 rounded-lg border border-white/10 text-[10px] font-semibold">Fast</button>
-                  <button type="button" data-pmode="thinking" class="pmode-btn flex-1 py-1 rounded-lg border border-white/10 text-[10px] font-semibold text-slate-400">Thinking</button>
-                  <button type="button" data-pmode="deep" class="pmode-btn flex-1 py-1 rounded-lg border border-white/10 text-[10px] font-semibold text-slate-400">Research</button>
-                </div>
-                <div class="flex items-center gap-1.5 bg-white/[0.06] border border-white/15 rounded-xl px-2.5 py-1.5">
-                  <input id="webChatInput" type="text" placeholder="Ask Orvix AI..." class="flex-1 bg-transparent text-white text-xs outline-none placeholder:text-slate-400" />
-                  <button id="webChatSendBtn" type="button" class="px-2.5 py-1 rounded-lg bg-sky-400 text-slate-950 font-bold text-[11px]">Send</button>
-                </div>
-              </div>
-            </div>
-          </div>
+  <div id="sidebarOverlay" class="sidebar-overlay" onclick="toggleSidebar(false)"></div>
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-top">
+      <div class="sidebar-actions">
+        <button class="icon-btn" onclick="toggleSidebar(false)" title="Close sidebar">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg>
+        </button>
+        <button class="icon-btn" onclick="newChat()" title="New chat">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+        </button>
+      </div>
+      <input id="searchChats" class="search-box" type="text" placeholder="Search chats..." oninput="renderSidebar()" />
+    </div>
+    <div id="sidebarList" class="sidebar-list"></div>
+    <div class="sidebar-footer">
+      <div class="user-pill">
+        <div id="userAvatar" class="avatar">U</div>
+        <div class="user-meta">
+          <div id="userName" class="user-name">User</div>
+          <div id="userHandle" class="user-handle"></div>
         </div>
+      </div>
+      <button class="logout-btn" onclick="logoutWebUser()">Log out</button>
+      <button class="icon-btn" onclick="openSettings()" title="Settings">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
+      </button>
+    </div>
+    <div class="about-creator">
+      <div class="about-title">About • Bereket Tesfaye</div>
+      <div class="about-links">
+        <a class="about-link" href="tel:0960934894">📞 0960934894</a>
+        <a class="about-link" href="https://t.me/orvix16" onclick="if(window.Telegram&&Telegram.WebApp){Telegram.WebApp.openTelegramLink('https://t.me/orvix16');return false;}">✈️ @orvix16</a>
       </div>
     </div>
-  </section>
+  </aside>
 
-  <!-- Bento Capabilities Grid -->
-  <section id="capabilities" class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-14">
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
+  <main class="main">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="icon-btn" onclick="toggleSidebar()" title="Menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div class="model-dropdown-wrap">
+          <button class="model-btn" onclick="toggleModelMenu(event)">
+            <span id="activeModelLabel">ChatGPT 4o</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div id="modelMenu" class="model-menu"></div>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <button id="installAppBtn" class="icon-btn" style="display:none; width:auto; padding:0 10px; font-size:12px; font-weight:600; background:rgba(56,189,248,0.18); color:#38bdf8; border:1px solid rgba(56,189,248,0.35);" onclick="installPWA()" title="Install Orvix AI App">📲 Install</button>
+        <button id="tempChatBtn" class="icon-btn temp-badge" onclick="toggleTempChat()" title="Temporary Chat">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="3 3"><circle cx="12" cy="12" r="9"/></svg>
+        </button>
+        <button class="icon-btn" onclick="newChat()" title="New Chat">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div id="chatScroll" class="chat-scroll"></div>
+
+    <div class="composer-area">
+      <div id="attachmentPreview" class="attachment-preview"></div>
+      <div class="composer-box">
+        <input id="fileInput" type="file" hidden accept="image/*,.txt,.md,.js,.py,.json,.csv,.html,.css" onchange="handleFiles(this.files)" />
+        <button class="icon-btn" onclick="document.getElementById('fileInput').click()" title="Attach file or image">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <textarea id="promptInput" class="composer-input" rows="1" placeholder="Message Orvix AI" oninput="autoResize(this); updateSendBtn();" onkeydown="handleKey(event)"></textarea>
+        <button id="micBtn" class="icon-btn mic-btn" onclick="toggleVoice()" title="Voice input">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+        </button>
+        <button id="voiceModeBtn" class="icon-btn" onclick="openVoiceMode()" title="Voice conversation">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v18"/><path d="M8 7v10"/><path d="M16 7v10"/><path d="M4 10v4"/><path d="M20 10v4"/></svg>
+        </button>
+        <button id="sendBtn" class="send-btn" onclick="onSendOrStop()" disabled title="Send">
+          <svg id="sendIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+        </button>
+      </div>
+      <div class="disclaimer">Orvix AI • Built by Bereket • Check important info.</div>
+    </div>
+  </main>
+
+  <div id="voiceOverlay" class="voice-overlay">
+    <div class="voice-top">
+      <span id="voiceStatusBadge" class="voice-status-badge">Voice Conversation</span>
+      <div style="display:flex; gap:6px; align-items:center;">
+        <button type="button" id="vPickFemale" class="voice-status-badge" style="cursor:pointer;" onclick="setVoicePreset('female')">👩 Female</button>
+        <button type="button" id="vPickMale" class="voice-status-badge" style="cursor:pointer;" onclick="setVoicePreset('male')">👨 Male</button>
+        <button type="button" id="vPickKids" class="voice-status-badge" style="cursor:pointer;" onclick="setVoicePreset('kids')">🧒 Kids</button>
+        <button class="icon-btn" onclick="closeVoiceMode()" title="Close">✕</button>
+      </div>
+    </div>
+    <div class="voice-center">
+      <div class="orb-stage">
+        <div id="orbHalo" class="orb-halo"></div>
+        <div id="voiceOrb" class="voice-orb listening" onclick="onOrbTap()"></div>
+      </div>
+      <div id="voiceCaption" class="voice-caption">Listening...</div>
+      <div id="liveHint" class="live-hint">Speak naturally • Tap orb to interrupt</div>
+    </div>
+    <div id="voiceFallbackRow" class="voice-fallback-row">
+      <input id="voiceFallbackInput" class="field-input" style="background:rgba(255,255,255,0.1);color:#fff;border-color:rgba(255,255,255,0.18);" type="text" placeholder="Type to Orvix..." onkeydown="if(event.key==='Enter') sendVoiceFallback()" />
+      <button class="btn-primary" style="background:#38bdf8;color:#082f49;" onclick="sendVoiceFallback()">Send</button>
+    </div>
+    <div class="voice-controls">
+      <button id="voiceMuteBtn" class="voice-ctrl-btn" onclick="toggleVoiceMute()" title="Mute/Unmute">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
+      </button>
+      <button id="voiceCcBtn" class="voice-ctrl-btn on" onclick="toggleVoiceCaptions()" title="Toggle Captions">CC</button>
+      <button class="voice-ctrl-btn" onclick="document.getElementById('voiceFallbackRow').classList.toggle('open')" title="Type message">⌨️</button>
+      <button class="voice-ctrl-btn end" onclick="closeVoiceMode()" title="End Call">✕</button>
+    </div>
+  </div>
+
+  <div id="confirmModal" class="modal-backdrop" onclick="if(event.target===this) closeConfirm()">
+    <div class="modal" style="max-width:340px;">
+      <div class="modal-header">
+        <span id="confirmTitle">Delete Chat?</span>
+        <button class="icon-btn" onclick="closeConfirm()">✕</button>
+      </div>
+      <div id="confirmMsg" style="font-size:14px; color:var(--text-secondary); line-height:1.5;">Are you sure you want to delete this conversation?</div>
+      <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:4px;">
+        <button class="seg-btn" style="flex:0 0 auto; padding:9px 16px;" onclick="closeConfirm()">Cancel</button>
+        <button class="btn-danger" onclick="runConfirmAction()">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="settingsModal" class="modal-backdrop" onclick="if(event.target===this) closeSettings()">
+    <div class="modal">
+      <div class="modal-header">
+        <span>Settings &amp; Custom Instructions</span>
+        <button class="icon-btn" onclick="closeSettings()">✕</button>
+      </div>
       <div>
-        <div class="mono text-xs text-sky-400 uppercase tracking-widest mb-2">Architecture</div>
-        <h2 data-i18n="capTitle" class="text-3xl sm:text-4xl font-extrabold tracking-tight">Everything you need, zero clutter.</h2>
-      </div>
-      <p data-i18n="capSub" class="muted text-sm sm:text-base max-w-md">Engineered for mobile speed with frosted Liquid Glass aesthetics and edge-cached delivery.</p>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-6 gap-4">
-      <!-- Card 1 (Span 3) -->
-      <div class="md:col-span-3 glass-panel rounded-3xl p-7 flex flex-col justify-between gap-5">
-        <div class="flex items-center justify-between">
-          <span class="w-11 h-11 rounded-2xl bg-sky-500/15 border border-sky-400/25 text-sky-400 flex items-center justify-center text-xl">🎙️</span>
-          <span class="mono text-[11px] muted">Orpheus + WebAudio</span>
+        <label class="field-label">Theme</label>
+        <div class="seg-group">
+          <button type="button" id="themeDarkBtn" class="seg-btn" onclick="applyTheme('dark')">Dark (Orvix)</button>
+          <button type="button" id="themeLightBtn" class="seg-btn" onclick="applyTheme('light')">Light</button>
         </div>
+      </div>
+      <div>
+        <label class="field-label">Language / ቋንቋ</label>
+        <div class="seg-group">
+          <button type="button" id="langEnBtn" class="seg-btn" onclick="applyLang('en')">English</button>
+          <button type="button" id="langAmBtn" class="seg-btn" onclick="applyLang('am')">አማርኛ</button>
+        </div>
+      </div>
+      <div>
+        <label class="field-label">Text Size (<span id="fontSizeVal">15</span>px)</label>
+        <input id="fontSizeRange" type="range" min="12" max="22" value="15" style="width:100%;" oninput="applyFontSize(this.value)" />
+      </div>
+      <div>
+        <label class="field-label">Brightness (<span id="brightnessVal">100</span>%)</label>
+        <input id="brightnessRange" type="range" min="60" max="125" value="100" style="width:100%;" oninput="applyBrightness(this.value)" />
+      </div>
+      <div id="adminOnlySettings" style="display:none; flex-direction:column; gap:12px;">
         <div>
-          <h3 data-i18n="b1Title" class="text-xl font-bold mb-2">Live Voice Conversations</h3>
-          <p data-i18n="b1Desc" class="muted text-sm leading-relaxed">Speak naturally with an audio-reactive glowing orb, switch between Female, Male, and Kids voices, toggle live captions, and tap anywhere to interrupt.</p>
-        </div>
-      </div>
-
-      <!-- Card 2 (Span 3) -->
-      <div class="md:col-span-3 glass-panel rounded-3xl p-7 flex flex-col justify-between gap-5">
-        <div class="flex items-center justify-between">
-          <span class="w-11 h-11 rounded-2xl bg-emerald-500/15 border border-emerald-400/25 text-emerald-400 flex items-center justify-center text-xl">🖼️</span>
-          <span class="mono text-[11px] muted">Qwen 3.8 27B VL</span>
-        </div>
-        <div>
-          <h3 data-i18n="b2Title" class="text-xl font-bold mb-2">Multimodal Vision Analysis</h3>
-          <p data-i18n="b2Desc" class="muted text-sm leading-relaxed">Snap or upload screenshots, diagrams, math homework, or code errors inside the Mini App or directly in Telegram chat for instant visual breakdowns.</p>
-        </div>
-      </div>
-
-      <!-- Card 3 (Span 2) -->
-      <div class="md:col-span-2 glass-panel rounded-3xl p-6 space-y-3">
-        <span class="w-10 h-10 rounded-xl bg-violet-500/15 text-violet-400 flex items-center justify-center text-lg">💎</span>
-        <h3 data-i18n="b3Title" class="font-bold text-lg">Liquid Glass Controls</h3>
-        <p data-i18n="b3Desc" class="muted text-sm leading-relaxed">Adjust font size, screen brightness, dark/light themes, and custom instructions on the fly.</p>
-      </div>
-
-      <!-- Card 4 (Span 2) -->
-      <div class="md:col-span-2 glass-panel rounded-3xl p-6 space-y-3">
-        <span class="w-10 h-10 rounded-xl bg-cyan-500/15 text-cyan-400 flex items-center justify-center text-lg">🌍</span>
-        <h3 data-i18n="b4Title" class="font-bold text-lg">English &amp; Amharic</h3>
-        <p data-i18n="b4Desc" class="muted text-sm leading-relaxed">Seamless bilingual support across UI, text responses, and voice recognition.</p>
-      </div>
-
-      <!-- Card 5 (Span 2) -->
-      <div class="md:col-span-2 glass-panel rounded-3xl p-6 space-y-3">
-        <span class="w-10 h-10 rounded-xl bg-amber-500/15 text-amber-400 flex items-center justify-center text-lg">🔒</span>
-        <h3 data-i18n="b5Title" class="font-bold text-lg">Private History</h3>
-        <p data-i18n="b5Desc" class="muted text-sm leading-relaxed">Your chats stay on your own device with Temporary Chat mode and one-tap confirmation delete.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Interactive Voice & Mode Playground -->
-  <section id="playground" class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-14">
-    <div class="glass-panel rounded-3xl p-6 sm:p-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-      <div class="lg:col-span-7 space-y-5">
-        <div class="mono text-xs text-emerald-400 uppercase tracking-widest">Interactive Preview</div>
-        <h2 data-i18n="playTitle" class="text-2xl sm:text-3xl font-extrabold">Test Orvix Voice &amp; Modes</h2>
-        <p data-i18n="playSub" class="muted text-sm sm:text-base leading-relaxed">Pick a voice personality and tap the orb to preview the live reactive state, or test a sample prompt.</p>
-
-        <div class="flex flex-wrap gap-2">
-          <button type="button" data-voice="Female (Hannah)" class="vpreset-btn pill-active glass-panel px-4 py-2 rounded-full text-xs font-semibold">👩 Female</button>
-          <button type="button" data-voice="Male (Troy)" class="vpreset-btn glass-panel px-4 py-2 rounded-full text-xs font-semibold">👨 Male</button>
-          <button type="button" data-voice="Kids (Autumn)" class="vpreset-btn glass-panel px-4 py-2 rounded-full text-xs font-semibold">🧒 Kids</button>
-        </div>
-
-        <div class="glass-panel rounded-2xl p-4 flex items-center justify-between gap-4">
-          <div class="text-xs sm:text-sm">
-            <div class="font-semibold" id="playStatusTitle">Ready to preview</div>
-            <div class="muted text-xs mt-0.5" id="playStatusSub">Tap the orb on the right to simulate live speech</div>
+          <label class="field-label">App Logo (Owner Only — or upload logo.png to GitHub)</label>
+          <div style="display:flex; gap:8px; align-items:center;">
+            <input id="logoUrlInput" class="field-input" type="text" placeholder="https://... or upload below" />
+            <input id="logoFileInput" type="file" accept="image/*" hidden onchange="uploadLogoFile(this.files[0])" />
+            <button class="btn-primary" type="button" onclick="document.getElementById('logoFileInput').click()" style="white-space:nowrap;">Upload</button>
           </div>
-          <a href="https://orvix-ai-bot.bereket1643.workers.dev" target="_blank" rel="noopener noreferrer" class="cta-primary px-4 py-2 rounded-xl text-xs font-bold shrink-0">Try Real App</a>
         </div>
       </div>
-
-      <div class="lg:col-span-5 flex flex-col items-center justify-center gap-4 py-4">
-        <button id="demoOrbBtn" type="button" aria-label="Toggle live orb preview" class="orb-live cursor-pointer focus:outline-none"></button>
-        <span id="orbLabel" class="mono text-xs text-sky-400">TAP ORB TO PREVIEW</span>
+      <div>
+        <label class="field-label">Custom Instructions (System Prompt)</label>
+        <textarea id="customInstInput" class="field-textarea" placeholder="What would you like Orvix AI to know about you or how should it respond?"></textarea>
+      </div>
+      <div>
+        <label class="field-label">AI Provider Override (Optional — uses Bot default if blank)</label>
+        <select id="providerSelect" class="field-select">
+          <option value="">Use Bot Server Default</option>
+          <option value="groq">Groq (Free Tier)</option>
+          <option value="gemini">Google Gemini (Free Tier)</option>
+          <option value="openrouter">OpenRouter (:free models)</option>
+        </select>
+      </div>
+      <div>
+        <label class="field-label">Custom API Key (Optional, saved only on your device)</label>
+        <input id="apiKeyInput" class="field-input" type="password" placeholder="Leave blank to use free bot key" />
+      </div>
+      <div style="display:flex; gap:10px; justify-content:space-between; margin-top:4px;">
+        <button class="btn-danger" onclick="clearAllChats()">Clear All Chats</button>
+        <button class="btn-primary" onclick="saveSettings()">Save</button>
       </div>
     </div>
-  </section>
-
-  <!-- FAQ Accordion -->
-  <section id="faq" class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 py-14">
-    <div class="text-center mb-10">
-      <div class="mono text-xs text-sky-400 uppercase tracking-widest mb-2">FAQ</div>
-      <h2 data-i18n="faqTitle" class="text-2xl sm:text-4xl font-extrabold">Common Questions</h2>
-    </div>
-
-    <div class="space-y-3">
-      <div class="faq-item glass-panel rounded-2xl p-5">
-        <button type="button" class="faq-trigger w-full flex items-center justify-between text-left font-semibold text-sm sm:text-base gap-4">
-          <span data-i18n="q1">Is Orvix AI free to use?</span>
-          <span class="faq-icon text-sky-400 text-xl transition-transform">+</span>
-        </button>
-        <div data-i18n="a1" class="faq-body muted text-sm pt-3 leading-relaxed">
-          Yes! Orvix AI runs on edge cloud infrastructure and free-tier AI models so anyone can chat, use voice mode, and analyze images without a subscription.
-        </div>
-      </div>
-
-      <div class="faq-item glass-panel rounded-2xl p-5">
-        <button type="button" class="faq-trigger w-full flex items-center justify-between text-left font-semibold text-sm sm:text-base gap-4">
-          <span data-i18n="q2">Can I use it both inside Telegram and on the web?</span>
-          <span class="faq-icon text-sky-400 text-xl transition-transform">+</span>
-        </button>
-        <div data-i18n="a2" class="faq-body muted text-sm pt-3 leading-relaxed">
-          Yes — you can chat directly with the Orvix AI Telegram bot, launch the Mini App inside Telegram, or open the web app directly from this site.
-        </div>
-      </div>
-
-      <div class="faq-item glass-panel rounded-2xl p-5">
-        <button type="button" class="faq-trigger w-full flex items-center justify-between text-left font-semibold text-sm sm:text-base gap-4">
-          <span data-i18n="q3">Are my conversations private?</span>
-          <span class="faq-icon text-sky-400 text-xl transition-transform">+</span>
-        </button>
-        <div data-i18n="a3" class="faq-body muted text-sm pt-3 leading-relaxed">
-          Your chat history is stored locally in your own device browser storage, and you can use Temporary Chat mode anytime for zero saved history.
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Creator Card -->
-  <section id="creator" class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-12 pb-20">
-    <div class="glass-panel rounded-3xl p-7 sm:p-10 flex flex-col md:flex-row items-center justify-between gap-6">
-      <div class="space-y-2 text-center md:text-left">
-        <div class="mono text-xs text-emerald-400 uppercase tracking-widest">Built By</div>
-        <h2 class="text-2xl sm:text-3xl font-extrabold">Bereket Tesfaye</h2>
-        <p data-i18n="creatorBio" class="muted text-sm sm:text-base max-w-xl">
-          Grade 11, Class B student &amp; creator of Orvix AI. Reach out on Telegram or WhatsApp/Phone for feedback, ideas, or updates.
-        </p>
-      </div>
-
-      <div class="flex flex-wrap items-center justify-center gap-3">
-        <a href="https://t.me/orvix16" target="_blank" rel="noopener noreferrer" class="cta-primary px-5 py-3 rounded-2xl text-sm font-bold flex items-center gap-2">
-          <span>✈️</span> <span>@orvix16</span>
-        </a>
-        <a href="tel:0960934894" class="glass-panel px-5 py-3 rounded-2xl text-sm font-semibold flex items-center gap-2">
-          <span>📞</span> <span>0960934894</span>
-        </a>
-        <button id="copyPhoneBtn" type="button" class="glass-panel px-4 py-3 rounded-2xl text-sm font-semibold">Copy</button>
-      </div>
-    </div>
-  </section>
-
-  <footer class="border-t border-white/10 py-8 text-center text-xs muted px-4">
-    <p>© 2026 Orvix AI • Crafted by Bereket Tesfaye</p>
-  </footer>
-
-  <div id="toast" class="toast glass-panel px-4 py-2.5 rounded-full text-xs font-semibold text-sky-400"></div>
+  </div>
 
   <script>
-    const FALLBACK_LOGO = 'data:image/svg+xml;utf8,' + encodeURIComponent(
-      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#38bdf8"/><stop offset="100%" stop-color="#10b981"/></linearGradient></defs><rect width="64" height="64" rx="32" fill="#030712"/><circle cx="32" cy="32" r="20" fill="none" stroke="url(#g)" stroke-width="5"/><circle cx="32" cy="32" r="6" fill="#38bdf8"/></svg>'
-    );
-    ['navLogo', 'phoneLogo'].forEach(id => {
-      const img = document.getElementById(id);
-      if (img) img.addEventListener('error', () => { img.src = FALLBACK_LOGO; });
-    });
+    const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+    if (tg) { tg.ready(); tg.expand(); }
 
-    const I18N = {
-      en: {
-        langBtn: 'አማርኛ',
-        navCap: 'Capabilities', navPlay: 'Live Demo', navFaq: 'FAQ', navCreator: 'Creator', navLaunch: 'Open App',
-        heroBadge: 'Powered by Edge AI • 100% Free Access',
-        heroTitle: 'The AI workspace built for <span class="bg-gradient-to-r from-sky-400 via-cyan-300 to-emerald-400 bg-clip-text text-transparent">speed, voice &amp; vision.</span>',
-        heroDesc: 'Orvix AI brings instant answers, deep multi-step research, real-time voice conversations, and photo analysis straight into Telegram and the web — in English and Amharic.',
-        ctaPrimary: 'Launch Orvix AI Now', ctaSecondary: 'Try Interactive Demo ↓',
-        m1: 'Fast Mode Latency', m2: 'Reasoning Engine', m3: 'Vision & Research',
-        capTitle: 'Everything you need, zero clutter.',
-        capSub: 'Engineered for mobile speed with frosted Liquid Glass aesthetics and edge-cached delivery.',
-        b1Title: 'Live Voice Conversations',
-        b1Desc: 'Speak naturally with an audio-reactive glowing orb, switch between Female, Male, and Kids voices, toggle live captions, and tap anywhere to interrupt.',
-        b2Title: 'Multimodal Vision Analysis',
-        b2Desc: 'Snap or upload screenshots, diagrams, math homework, or code errors inside the Mini App or directly in Telegram chat for instant visual breakdowns.',
-        b3Title: 'Liquid Glass Controls', b3Desc: 'Adjust font size, screen brightness, dark/light themes, and custom instructions on the fly.',
-        b4Title: 'English & Amharic', b4Desc: 'Seamless bilingual support across UI, text responses, and voice recognition.',
-        b5Title: 'Private History', b5Desc: 'Your chats stay on your own device with Temporary Chat mode and one-tap confirmation delete.',
-        playTitle: 'Test Orvix Voice & Modes',
-        playSub: 'Pick a voice personality and tap the orb to preview the live reactive state, or test a sample prompt.',
-        faqTitle: 'Common Questions',
-        q1: 'Is Orvix AI free to use?',
-        a1: 'Yes! Orvix AI runs on edge cloud infrastructure and free-tier AI models so anyone can chat, use voice mode, and analyze images without a subscription.',
-        q2: 'Can I use it both inside Telegram and on the web?',
-        a2: 'Yes — you can chat directly with the Orvix AI Telegram bot, launch the Mini App inside Telegram, or open the web app directly from this site.',
-        q3: 'Are my conversations private?',
-        a3: 'Your chat history is stored locally in your own device browser storage, and you can use Temporary Chat mode anytime for zero saved history.',
-        creatorBio: 'Grade 11, Class B student & creator of Orvix AI. Reach out on Telegram or WhatsApp/Phone for feedback, ideas, or updates.'
-      },
-      am: {
-        langBtn: 'English',
-        navCap: 'ባህሪያት', navPlay: 'ሙከራ', navFaq: 'ጥያቄዎች', navCreator: 'ፈጣሪው', navLaunch: 'አፑን ክፈት',
-        heroBadge: 'በ Edge AI የሚሰራ • 100% ነፃ',
-        heroTitle: 'ለፍጥነት፣ ለድምጽ እና ለምስል ትንተና የተሰራ <span class="bg-gradient-to-r from-sky-400 via-cyan-300 to-emerald-400 bg-clip-text text-transparent">ዘመናዊ የ AI ረዳት።</span>',
-        heroDesc: 'Orvix AI ፈጣን መልሶችን፣ Deep Research፣ የቀጥታ የድምጽ ውይይትን እና የምስል ትንተናን በእንግሊዝኛ እና በአማርኛ በ Telegram እና በዌብ ያቀርባል።',
-        ctaPrimary: 'Orvix AIን ክፈት', ctaSecondary: 'ሙከራውን እይ ↓',
-        m1: 'ፈጣን ምላሽ', m2: 'የማሰብ አቅም', m3: 'ምስል እና ምርምር',
-        capTitle: 'የሚፈልጉት ሁሉ፣ በንጹህ ዲዛይን።',
-        capSub: 'በማንኛውም ስልክ ላይ በፍጥነት እንዲሰራ በ Liquid Glass ዲዛይን የተገነባ።',
-        b1Title: 'የቀጥታ ድምጽ ውይይት',
-        b1Desc: 'ከድምጽ ጋር የሚንቀሳቀስ Orb፣ የሴት/ወንድ/ህፃናት ድምጽ ምርጫ፣ የቀጥታ ጽሑፍ (Captions) እና በንካት ማስቆም።',
-        b2Title: 'የምስል ትንተና',
-        b2Desc: 'ፎቶዎችን፣ የቤት ሥራዎችን ወይም ስክሪን ሹቶችን በመላክ ወዲያውኑ ዝርዝር ትንተና ያግኙ።',
-        b3Title: 'Liquid Glass መቆጣጠሪያ', b3Desc: 'የጽሑፍ መጠን፣ ብርሃን፣ Dark/Light ገጽታ እና Custom Instructions በቀላሉ ያስተካክሉ።',
-        b4Title: 'እንግሊዝኛ እና አማርኛ', b4Desc: 'በሁለቱም ቋንቋዎች የተሟላ የጽሑፍ እና የድምጽ ድጋፍ።',
-        b5Title: 'ሚስጥራዊ ታሪክ', b5Desc: 'ቻቶችዎ በራስዎ ስልክ ላይ ብቻ ይቀመጣሉ፤ ጊዜያዊ ቻትም አለው።',
-        playTitle: 'የድምጽ እና የሞድ ሙከራ',
-        playSub: 'የድምጽ አይነት መርጠው ክቡን በመንካት የቀጥታ ሁኔታውን ይሞክሩ።',
-        faqTitle: 'ተደጋጋሚ ጥያቄዎች',
-        q1: 'Orvix AI በነፃ ነው የሚሰራው?',
-        a1: 'አዎ! ማንኛውም ሰው ያለ ምንም ክፍያ ቻት ማድረግ፣ በድምጽ ማውራት እና ፎቶ መተንተን ይችላል።',
-        q2: 'በ Telegram እና በዌብ መጠቀም ይቻላል?',
-        a2: 'አዎ — በቀጥታ ከ Telegram ቦቱ ጋር፣ በ Mini App ወይም በዌብ መጠቀም ይችላሉ።',
-        q3: 'ውይይቶቼ ሚስጥራዊ ናቸው?',
-        a3: 'ቻቶችዎ በራስዎ ስልክ ላይ ብቻ ይቀመጣሉ፤ ጊዜያዊ ቻት ሲጠቀሙ ደግሞ ምንም አይቀመጥም።',
-        creatorBio: 'በረከት ተስፋዬ — የ11ኛ ክፍል (Class B) ተማሪ እና የ Orvix AI ፈጣሪ። ለአስተያየት ወይም ለትብብር በ Telegram ወይም በስልክ ያግኙኝ።'
-      }
+    const MODELS = [
+      { id: "openai/gpt-oss-20b", label: "Orvix Fast", desc: "Instant everyday answers & chat", provider: "groq", mode: "fast" },
+      { id: "openai/gpt-oss-120b", label: "Orvix Thinking", desc: "Smart reasoning, math & coding", provider: "groq", mode: "thinking" },
+      { id: "qwen/qwen3.8-27b", label: "Orvix Deep Research", desc: "In-depth analysis & multi-step research", provider: "groq", mode: "deep" }
+    ];
+
+    let state = {
+      chats: JSON.parse(localStorage.getItem("tg_gpt_chats") || "[]"),
+      activeChatId: null,
+      tempMode: false,
+      tempMessages: [],
+      model: localStorage.getItem("tg_gpt_model") || MODELS[0].id,
+      theme: localStorage.getItem("tg_gpt_theme") || "dark",
+      customInst: localStorage.getItem("tg_gpt_inst") || "",
+      provider: localStorage.getItem("tg_gpt_provider") || "",
+      apiKey: localStorage.getItem("tg_gpt_apikey") || "",
+      attachments: [],
+      isGenerating: false,
+      abortCtrl: null
     };
 
-    const PHONE_SAMPLES = {
-      fast: {
-        label: 'Orvix Fast',
-        user: 'Summarize how solar panels generate electricity.',
-        ai: 'Photovoltaic cells absorb sunlight and knock electrons loose inside silicon layers, creating a direct electric current that an inverter converts for everyday use.'
-      },
-      thinking: {
-        label: 'Orvix Thinking',
-        user: 'Write a clean JS function to format a 10-digit phone number.',
-        ai: 'function formatPhone(n) { return n.replace(/\\D/g, "").replace(/(\\d{4})(\\d{3})(\\d{3})/, "$1-$2-$3"); } — strips non-digits and formats cleanly.'
-      },
-      deep: {
-        label: 'Orvix Deep Research',
-        user: 'Compare static websites vs. Progressive Web Apps.',
-        ai: '1. Reach: Static pages load instantly via any link. 2. App Experience: PWAs add home-screen install and full-screen UX. Best strategy: pair this landing page with your Orvix Web App.'
-      }
-    };
 
-    let lang = 'en', theme = 'dark', voice = 'Female (Hannah)', orbActive = false;
 
-    function showToast(msg) {
-      const t = document.getElementById('toast');
-      t.textContent = msg;
-      t.classList.add('show');
-      setTimeout(() => t.classList.remove('show'), 2200);
-    }
-
-    function applyLang(l) {
-      lang = l;
-      const d = I18N[l];
-      document.getElementById('langToggleBtn').textContent = d.langBtn;
-      document.querySelectorAll('[data-i18n]').forEach(el => {
-        const k = el.getAttribute('data-i18n');
-        if (!d[k]) return;
-        if (k === 'heroTitle') el.innerHTML = d[k];
-        else el.textContent = d[k];
-      });
-    }
-
-    document.getElementById('langToggleBtn').addEventListener('click', () => applyLang(lang === 'en' ? 'am' : 'en'));
-    document.getElementById('themeToggleBtn').addEventListener('click', () => {
-      theme = theme === 'dark' ? 'light' : 'dark';
-      document.documentElement.classList.toggle('light', theme === 'light');
-      document.getElementById('themeToggleBtn').textContent = theme === 'dark' ? '☀️' : '🌙';
+    let deferredInstallPrompt = null;
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      deferredInstallPrompt = e;
+      const btn = document.getElementById("installAppBtn");
+      if (btn && !(tg && tg.initData)) btn.style.display = "flex";
     });
-
-    const WEB_MODELS = {
-      fast: { id: 'openai/gpt-oss-20b', label: 'Orvix Fast' },
-      thinking: { id: 'openai/gpt-oss-120b', label: 'Orvix Thinking' },
-      deep: { id: 'qwen/qwen3.8-27b', label: 'Orvix Deep Research' }
-    };
-    let activeWebMode = 'fast';
-    let webChatHistory = [];
-    let webBusy = false;
-
-    document.querySelectorAll('.pmode-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        activeWebMode = btn.getAttribute('data-pmode') || 'fast';
-        document.querySelectorAll('.pmode-btn').forEach(b => {
-          b.classList.toggle('pill-active', b === btn);
-          b.classList.toggle('text-slate-400', b !== btn);
-        });
-        document.getElementById('phoneModeLabel').textContent = WEB_MODELS[activeWebMode].label;
-      });
-    });
-
-    function appendWebBubble(role, text) {
-      const box = document.getElementById('liveWebMsgs');
-      const wrap = document.createElement('div');
-      if (role === 'user') {
-        wrap.className = 'flex justify-end';
-        const b = document.createElement('div');
-        b.className = 'bg-sky-500/20 border border-sky-400/30 text-slate-100 px-3 py-2 rounded-2xl rounded-tr-sm max-w-[85%] leading-relaxed';
-        b.textContent = text;
-        wrap.appendChild(b);
-      } else {
-        wrap.className = 'flex items-start gap-2';
-        const dot = document.createElement('div');
-        dot.className = 'w-5 h-5 rounded-full bg-gradient-to-tr from-sky-400 to-emerald-400 shrink-0 mt-0.5';
-        const b = document.createElement('div');
-        b.className = 'text-slate-200 leading-relaxed bg-white/[0.04] border border-white/10 px-3 py-2 rounded-2xl rounded-tl-sm max-w-[88%] whitespace-pre-wrap';
-        b.textContent = text;
-        wrap.appendChild(dot);
-        wrap.appendChild(b);
-      }
-      box.appendChild(wrap);
-      box.scrollTop = box.scrollHeight;
-      return wrap.lastElementChild;
+    async function installPWA() {
+      if (!deferredInstallPrompt) return;
+      deferredInstallPrompt.prompt();
+      await deferredInstallPrompt.userChoice;
+      deferredInstallPrompt = null;
+      const btn = document.getElementById("installAppBtn");
+      if (btn) btn.style.display = "none";
     }
 
-    async function sendWebChat() {
-      if (webBusy) return;
-      const inp = document.getElementById('webChatInput');
-      const txt = inp.value.trim();
-      if (!txt) return;
-      inp.value = '';
-      webBusy = true;
-      appendWebBubble('user', txt);
-      webChatHistory.push({ role: 'user', content: txt });
-      const aiEl = appendWebBubble('assistant', 'Orvix analysing...');
 
+    let authMode = "login";
+    let webUser = JSON.parse(localStorage.getItem("orvix_web_user") || "null");
+    let webToken = localStorage.getItem("orvix_web_token") || "";
+
+    function setAuthMode(m) {
+      authMode = m;
+      document.getElementById("tabLogin").classList.toggle("active", m === "login");
+      document.getElementById("tabSignup").classList.toggle("active", m === "signup");
+      document.getElementById("authNameWrap").style.display = m === "signup" ? "block" : "none";
+      document.getElementById("authSubmitBtn").textContent = m === "signup" ? "Create Account" : "Log In";
+      document.getElementById("authErr").textContent = "";
+    }
+
+    function applyWebUserUI(u) {
+      if (!u) return;
+      document.getElementById("userName").textContent = u.name || "User";
+      document.getElementById("userHandle").textContent = u.email || "";
+      document.getElementById("userAvatar").textContent = (u.name || "U").charAt(0).toUpperCase();
+      document.getElementById("authGate").classList.remove("open");
+    }
+
+    async function submitAuth() {
+      const email = document.getElementById("authEmail").value.trim();
+      const password = document.getElementById("authPassword").value;
+      const name = document.getElementById("authName").value.trim();
+      const errEl = document.getElementById("authErr");
+      const btn = document.getElementById("authSubmitBtn");
+      errEl.textContent = "";
+      btn.disabled = true;
+      btn.textContent = "Please wait...";
       try {
-        const res = await fetch('https://orvix-ai-bot.bereket1643.workers.dev/api/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            messages: webChatHistory.slice(-8),
-            model: WEB_MODELS[activeWebMode].id,
-            lang: lang
-          })
+        const endpoint = authMode === "signup" ? "https://orvix-ai-bot.bereket1643.workers.dev/api/auth/signup" : "https://orvix-ai-bot.bereket1643.workers.dev/api/auth/login";
+        const res = await fetch(endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(authMode === "signup" ? { name, email, password } : { email, password })
         });
+        const data = await res.json();
         if (!res.ok) {
-          aiEl.textContent = 'Error: ' + (await res.text());
+          errEl.textContent = data.error || "Authentication failed.";
         } else {
-          const reader = res.body.getReader();
-          const decoder = new TextDecoder();
-          let buf = '';
-          let full = '';
-          while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-            buf += decoder.decode(value, { stream: true });
-            const lines = buf.split('\n');
-            buf = lines.pop() || '';
-            for (const line of lines) {
-              const tr = line.trim();
-              if (!tr.startsWith('data:')) continue;
-              const d = tr.slice(5).trim();
-              if (d === '[DONE]') break;
-              try {
-                const j = JSON.parse(d);
-                const delta = j.choices && j.choices[0] && j.choices[0].delta && j.choices[0].delta.content;
-                if (delta) {
-                  full += delta;
-                  aiEl.textContent = full;
-                  const box = document.getElementById('liveWebMsgs');
-                  box.scrollTop = box.scrollHeight;
-                }
-              } catch (_) {}
-            }
-          }
-          if (full) webChatHistory.push({ role: 'assistant', content: full });
-          else aiEl.textContent = 'No response received.';
+          webToken = data.token;
+          webUser = data.user;
+          localStorage.setItem("orvix_web_token", webToken);
+          localStorage.setItem("orvix_web_user", JSON.stringify(webUser));
+          applyWebUserUI(webUser);
         }
       } catch (_) {
-        aiEl.textContent = 'Could not reach Orvix server. Tap "Launch Orvix AI Now" or open in Telegram.';
+        errEl.textContent = "Could not connect to Orvix server.";
       } finally {
-        webBusy = false;
+        btn.disabled = false;
+        btn.textContent = authMode === "signup" ? "Create Account" : "Log In";
       }
     }
 
-    document.getElementById('webChatSendBtn').addEventListener('click', sendWebChat);
-    document.getElementById('webChatInput').addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') sendWebChat();
-    });
+    function logoutWebUser() {
+      webToken = "";
+      webUser = null;
+      localStorage.removeItem("orvix_web_token");
+      localStorage.removeItem("orvix_web_user");
+      document.getElementById("authGate").classList.add("open");
+    }
 
-    document.querySelectorAll('.vpreset-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        voice = btn.getAttribute('data-voice');
-        document.querySelectorAll('.vpreset-btn').forEach(b => b.classList.toggle('pill-active', b === btn));
-        if (orbActive) document.getElementById('playStatusSub').textContent = 'Speaking with ' + voice + '...';
-        showToast('Voice: ' + voice);
-      });
-    });
-
-    document.getElementById('demoOrbBtn').addEventListener('click', () => {
-      orbActive = !orbActive;
-      document.getElementById('demoOrbBtn').classList.toggle('speaking', orbActive);
-      document.getElementById('orbLabel').textContent = orbActive ? 'SPEAKING • TAP TO STOP' : 'TAP ORB TO PREVIEW';
-      document.getElementById('playStatusTitle').textContent = orbActive ? 'Orvix Live Active' : 'Ready to preview';
-      document.getElementById('playStatusSub').textContent = orbActive ? 'Speaking with ' + voice + '...' : 'Tap the orb on the right to simulate live speech';
-    });
-
-    document.querySelectorAll('.faq-trigger').forEach(btn => {
-      btn.addEventListener('click', () => btn.closest('.faq-item').classList.toggle('open'));
-    });
-
-    document.getElementById('copyPhoneBtn').addEventListener('click', () => {
-      const p = '0960934894';
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(p).then(() => showToast('Copied: ' + p)).catch(() => showToast(p));
-      } else {
-        showToast(p);
+    function init() {
+      if (!MODELS.some(x => x.id === state.model)) { state.model = MODELS[0].id; localStorage.setItem("tg_gpt_model", state.model); }
+      applyTheme(state.theme);
+      applyDisplayPrefs();
+      applyLang(appLang);
+      if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+        const u = tg.initDataUnsafe.user;
+        const full = [u.first_name, u.last_name].filter(Boolean).join(" ") || u.username || "User";
+        document.getElementById("userName").textContent = full;
+        if (u.username) document.getElementById("userHandle").textContent = "@" + u.username;
+        const av = document.getElementById("userAvatar");
+        if (u.photo_url) {
+          av.innerHTML = '<img src="' + escapeHtml(u.photo_url) + '" alt=""/>';
+        } else {
+          av.textContent = full.charAt(0).toUpperCase();
+        }
+        const isOwner = (u.username || "").toLowerCase() === "orvix16";
+        const adminSec = document.getElementById("adminOnlySettings");
+        if (adminSec) adminSec.style.display = isOwner ? "flex" : "none";
       }
-    });
+      renderModelMenu();
+      renderSidebar();
+      renderChat();
+      refreshSmartSuggestions();
+      if (webUser && webToken) { applyWebUserUI(webUser); } else { document.getElementById('authGate').classList.add('open'); }
+      setTimeout(() => {
+        const sp = document.getElementById("splashScreen");
+        if (sp) { sp.classList.add("hide"); setTimeout(() => { sp.style.display = "none"; }, 480); }
+      }, 1200);
+    }
 
-    applyLang('en');
+
+    function getLogoHtml(sz) {
+      const custom = "https://orvix-ai-bot.bereket1643.workers.dev/logo.png";
+      return '<img src="' + escapeHtml(custom) + '" alt="Orvix AI" style="width:72px;height:72px;max-width:72px;max-height:72px;border-radius:50%;object-fit:cover;display:block;" data-sz="' + sz + '" onerror="fallbackLogo(this)"/>';
+    }
+    function fallbackLogo(img) {
+      const sz = img.getAttribute("data-sz") || 28;
+      img.outerHTML = '<svg width="' + sz + '" height="' + sz + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-5"/></svg>';
+    }
+    function applyFontSize(val) {
+      document.documentElement.style.setProperty("--chat-font-size", val + "px");
+      localStorage.setItem("tg_gpt_fontsize", val);
+      const el = document.getElementById("fontSizeVal");
+      if (el) el.textContent = val;
+    }
+    function applyBrightness(val) {
+      document.documentElement.style.setProperty("--app-brightness", (val / 100).toFixed(2));
+      localStorage.setItem("tg_gpt_brightness", val);
+      const el = document.getElementById("brightnessVal");
+      if (el) el.textContent = val;
+    }
+    function uploadLogoFile(file) {
+      if (!file) return;
+      const r = new FileReader();
+      r.onload = () => {
+        document.getElementById("logoUrlInput").value = r.result;
+      };
+      r.readAsDataURL(file);
+    }
+    function applyDisplayPrefs() {
+      const fs = localStorage.getItem("tg_gpt_fontsize") || "15";
+      const br = localStorage.getItem("tg_gpt_brightness") || "100";
+      applyFontSize(fs);
+      applyBrightness(br);
+      const fsR = document.getElementById("fontSizeRange");
+      const brR = document.getElementById("brightnessRange");
+      if (fsR) fsR.value = fs;
+      if (brR) brR.value = br;
+    }
+
+
+    let appLang = localStorage.getItem("tg_gpt_lang") || "en";
+    const I18N = {
+      en: {
+        placeholder: "Message Orvix AI",
+        search: "Search chats...",
+        listening: "Listening...",
+        hint: "Speak naturally • Tap orb to interrupt",
+        disclaimer: "Orvix AI • Built by Bereket • Check important info.",
+        temp: "Temporary Chat",
+        emptyTitle: "Orvix AI"
+      },
+      am: {
+        placeholder: "ለ Orvix AI መልዕክት ይጻፉ...",
+        search: "ቻቶችን ይፈልጉ...",
+        listening: "እያዳመጠ ነው...",
+        hint: "በተፈጥሮ ይናገሩ • ለማስቆም ክቡን ይንኩ",
+        disclaimer: "Orvix AI • በበረከት የተሰራ • አስፈላጊ መረጃን ያረጋግጡ።",
+        temp: "ጊዜያዊ ቻት",
+        emptyTitle: "Orvix AI"
+      }
+    };
+
+    function applyLang(l) {
+      appLang = l === "am" ? "am" : "en";
+      localStorage.setItem("tg_gpt_lang", appLang);
+      const eb = document.getElementById("langEnBtn");
+      const ab = document.getElementById("langAmBtn");
+      if (eb) eb.classList.toggle("active", appLang === "en");
+      if (ab) ab.classList.toggle("active", appLang === "am");
+      const t = I18N[appLang];
+      const pi = document.getElementById("promptInput");
+      if (pi) pi.placeholder = t.placeholder;
+      const sc = document.getElementById("searchChats");
+      if (sc) sc.placeholder = t.search;
+      const dis = document.querySelector(".disclaimer");
+      if (dis) dis.textContent = t.disclaimer;
+    }
+
+    function applyTheme(t) {
+      state.theme = t;
+      localStorage.setItem("tg_gpt_theme", t);
+      document.documentElement.classList.toggle("light", t === "light");
+      const db = document.getElementById("themeDarkBtn");
+      const lb = document.getElementById("themeLightBtn");
+      if (db) db.classList.toggle("active", t !== "light");
+      if (lb) lb.classList.toggle("active", t === "light");
+    }
+
+    function toggleSidebar(force) {
+      const sb = document.getElementById("sidebar");
+      const ov = document.getElementById("sidebarOverlay");
+      const isDesktop = window.innerWidth >= 768;
+      if (isDesktop) {
+        sb.classList.toggle("collapsed", force === false ? true : undefined);
+      } else {
+        const open = force !== undefined ? force : !sb.classList.contains("open");
+        sb.classList.toggle("open", open);
+        ov.classList.toggle("open", open);
+      }
+    }
+
+    function renderModelMenu() {
+      const m = MODELS.find(x => x.id === state.model) || MODELS[0];
+      document.getElementById("activeModelLabel").textContent = m.label;
+      const menu = document.getElementById("modelMenu");
+      menu.innerHTML = MODELS.map(x => (
+        '<button class="model-option ' + (x.id === state.model ? 'selected' : '') + '" onclick="selectModel(\'' + x.id + '\')">' +
+          '<span class="model-option-name">' + x.label + '</span>' +
+          '<span class="model-option-desc">' + x.desc + '</span>' +
+        '</button>'
+      )).join("");
+    }
+
+    function toggleModelMenu(e) {
+      e.stopPropagation();
+      document.getElementById("modelMenu").classList.toggle("open");
+    }
+    document.addEventListener("click", () => document.getElementById("modelMenu").classList.remove("open"));
+
+    function selectModel(id) {
+      state.model = id;
+      localStorage.setItem("tg_gpt_model", id);
+      renderModelMenu();
+      document.getElementById("modelMenu").classList.remove("open");
+    }
+
+    function toggleTempChat() {
+      state.tempMode = !state.tempMode;
+      document.getElementById("tempChatBtn").classList.toggle("active", state.tempMode);
+      if (state.tempMode) { state.activeChatId = null; state.tempMessages = []; }
+      renderChat();
+    }
+
+    function newChat() {
+      state.tempMode = false;
+      state.activeChatId = null;
+      state.tempMessages = [];
+      document.getElementById("tempChatBtn").classList.remove("active");
+      if (window.innerWidth < 768) toggleSidebar(false);
+      renderSidebar();
+      renderChat();
+    }
+
+    function saveChats() {
+      localStorage.setItem("tg_gpt_chats", JSON.stringify(state.chats));
+    }
+
+    function getActiveMessages() {
+      if (state.tempMode) return state.tempMessages;
+      const c = state.chats.find(x => x.id === state.activeChatId);
+      return c ? c.messages : [];
+    }
+
+    function renderSidebar() {
+      const q = document.getElementById("searchChats").value.toLowerCase();
+      const list = document.getElementById("sidebarList");
+      const now = Date.now();
+      const groups = { Today: [], Yesterday: [], "Previous 7 Days": [], Older: [] };
+      state.chats.filter(c => !q || c.title.toLowerCase().includes(q)).forEach(c => {
+        const diffDays = (now - (c.updatedAt || c.createdAt || now)) / 86400000;
+        if (diffDays < 1) groups.Today.push(c);
+        else if (diffDays < 2) groups.Yesterday.push(c);
+        else if (diffDays < 7) groups["Previous 7 Days"].push(c);
+        else groups.Older.push(c);
+      });
+      let html = "";
+      for (const [label, items] of Object.entries(groups)) {
+        if (!items.length) continue;
+        html += '<div class="group-label">' + label + '</div>';
+        items.forEach(c => {
+          html += '<div class="chat-item ' + (c.id === state.activeChatId && !state.tempMode ? 'active' : '') + '" onclick="openChat(\'' + c.id + '\')">' +
+            '<span class="chat-item-title">' + escapeHtml(c.title) + '</span>' +
+            '<button class="chat-item-del" onclick="deleteChat(event,\'' + c.id + '\')" title="Delete">✕</button>' +
+          '</div>';
+        });
+      }
+      list.innerHTML = html || '<div style="padding:16px;font-size:13px;color:var(--text-muted);text-align:center;">No chats yet</div>';
+    }
+
+    function openChat(id) {
+      state.tempMode = false;
+      state.activeChatId = id;
+      document.getElementById("tempChatBtn").classList.remove("active");
+      if (window.innerWidth < 768) toggleSidebar(false);
+      renderSidebar();
+      renderChat();
+    }
+
+    let pendingConfirmFn = null;
+    function openConfirm(title, msg, fn) {
+      pendingConfirmFn = fn;
+      document.getElementById("confirmTitle").textContent = title;
+      document.getElementById("confirmMsg").textContent = msg;
+      document.getElementById("confirmModal").classList.add("open");
+    }
+    function closeConfirm() {
+      pendingConfirmFn = null;
+      document.getElementById("confirmModal").classList.remove("open");
+    }
+    function runConfirmAction() {
+      const fn = pendingConfirmFn;
+      closeConfirm();
+      if (fn) fn();
+    }
+    function deleteChat(e, id) {
+      e.stopPropagation();
+      openConfirm("Delete Chat?", "Are you sure you want to delete this chat from your history?", () => {
+        state.chats = state.chats.filter(c => c.id !== id);
+        if (state.activeChatId === id) state.activeChatId = null;
+        saveChats();
+        renderSidebar();
+        renderChat();
+      });
+    }
+
+    function renderMarkdown(text) {
+      if (typeof marked === "undefined") return escapeHtml(text).replace(/\n/g, "<br>");
+      const renderer = new marked.Renderer();
+      renderer.code = function(codeObj, langArg) {
+        const codeStr = typeof codeObj === "object" ? codeObj.text : codeObj;
+        const lang = (typeof codeObj === "object" ? codeObj.lang : langArg) || "code";
+        let highlighted = escapeHtml(codeStr);
+        if (typeof hljs !== "undefined") {
+          try {
+            highlighted = lang && hljs.getLanguage(lang)
+              ? hljs.highlight(codeStr, { language: lang }).value
+              : hljs.highlightAuto(codeStr).value;
+          } catch (_) {}
+        }
+        return '<div class="code-block-wrap">' +
+          '<div class="code-block-header"><span>' + escapeHtml(lang) + '</span>' +
+          '<button class="copy-code-btn" onclick="copyCode(this)">Copy code</button></div>' +
+          '<pre><code>' + highlighted + '</code></pre></div>';
+      };
+      return marked.parse(text, { renderer, breaks: true });
+    }
+
+    window.copyCode = function(btn) {
+      const code = btn.closest(".code-block-wrap").querySelector("code").innerText;
+      navigator.clipboard.writeText(code);
+      btn.textContent = "Copied!";
+      setTimeout(() => btn.textContent = "Copy code", 1500);
+    };
+
+    function renderChat() {
+      const scroll = document.getElementById("chatScroll");
+      const msgs = getActiveMessages();
+      if (!msgs.length) {
+        scroll.innerHTML =
+          '<div class="empty-state">' +
+            '<div class="gpt-logo">' + getLogoHtml(28) + '</div>' +
+            '<div class="empty-title">' + (state.tempMode ? 'Temporary Chat' : 'Orvix AI') + '</div>' +
+                        '<div id="suggestionsGrid" class="suggestions">' + renderSuggestionCards(getCurrentSuggestions()) + '</div>' +
+          '</div>';
+        return;
+      }
+
+      let html = '<div class="chat-container">';
+      msgs.forEach((m, idx) => {
+        if (m.role === "user") {
+          html += '<div class="msg-row user">' +
+            '<div class="msg-bubble-user">' + (m.images && m.images.length ? m.images.map(im => '<img class="msg-img-preview" src="' + im + '"/>').join('') : '') + escapeHtml(m.display || m.content) + '</div>' +
+            '<div class="msg-user-actions">' +
+              '<button class="msg-action-btn" onclick="editMessage(' + idx + ')">Edit</button>' +
+            '</div>' +
+          '</div>';
+        } else {
+          html += '<div class="msg-row assistant">' +
+            '<div class="msg-assistant-wrap">' +
+              '<div class="assistant-avatar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg></div>' +
+              '<div class="assistant-content">' +
+                (m.content ? renderMarkdown(m.content) : '<div class="analysing-pill"><span class="typing-dot"></span><span>' + (state.model === "qwen/qwen3.8-27b" ? "Orvix Deep Research analysing..." : "Orvix analysing...") + '</span></div>') +
+                (!state.isGenerating || idx < msgs.length - 1 ? (
+                  '<div class="msg-actions">' +
+                    '<button class="msg-action-btn" onclick="copyMsg(' + idx + ', this)">Copy</button>' +
+                    '<button class="msg-action-btn" onclick="speakMsg(' + idx + ')">Read aloud</button>' +
+                    (idx === msgs.length - 1 ? '<button class="msg-action-btn" onclick="regenerate()">Regenerate</button>' : '') +
+                  '</div>'
+                ) : '') +
+              '</div>' +
+            '</div>' +
+          '</div>';
+        }
+      });
+      html += '</div>';
+      scroll.innerHTML = html;
+      scroll.scrollTop = scroll.scrollHeight;
+    }
+
+
+    const SUGG_POOL = [
+      { title: "Study faster", subtitle: "Summarize a tough topic", prompt: "Explain the Pomodoro technique and how to study effectively" },
+      { title: "Write code", subtitle: "Build a clean script", prompt: "Write a clean Python script to organize files by type" },
+      { title: "Startup ideas", subtitle: "AI business concepts", prompt: "Give me 5 practical startup ideas I can build with low budget" },
+      { title: "Draft a message", subtitle: "Polite professional reply", prompt: "Help me write a polite and clear follow-up message" },
+      { title: "Learn a skill", subtitle: "30-day roadmap", prompt: "Create a 30-day beginner roadmap to learn web development" },
+      { title: "Daily productivity", subtitle: "Plan my day smartly", prompt: "Help me build a focused daily routine for school and coding" },
+      { title: "Math helper", subtitle: "Step-by-step solving", prompt: "Explain quadratic equations with a simple real-world example" },
+      { title: "English practice", subtitle: "Improve my writing", prompt: "Give me 5 tips to write clearer and more natural English" },
+      { title: "Tech explained", subtitle: "How APIs work", prompt: "Explain how APIs and webhooks work in simple everyday terms" },
+      { title: "Creative writing", subtitle: "Short story spark", prompt: "Give me an intriguing sci-fi short story opening idea" },
+      { title: "Career advice", subtitle: "Stand out early", prompt: "What skills should a high school student learn to prepare for tech?" },
+      { title: "Quick quiz", subtitle: "Test my knowledge", prompt: "Give me a fun 5-question general science quiz" }
+    ];
+    let activeSuggestions = null;
+    let lastSuggSig = "";
+
+    function getCurrentSuggestions() {
+      if (activeSuggestions && activeSuggestions.length) return activeSuggestions;
+      const shuffled = SUGG_POOL.slice().sort(() => Math.random() - 0.5);
+      activeSuggestions = shuffled.slice(0, 4);
+      return activeSuggestions;
+    }
+
+    function renderSuggestionCards(items) {
+      return items.map((it, i) => (
+        '<button class="suggestion-card" onclick="pickSuggestion(' + i + ')">' +
+          '<strong>' + escapeHtml(it.title) + '</strong>' +
+          '<span>' + escapeHtml(it.subtitle) + '</span>' +
+        '</button>'
+      )).join("");
+    }
+
+    function pickSuggestion(idx) {
+      const items = getCurrentSuggestions();
+      if (items[idx]) useSuggestion(items[idx].prompt);
+    }
+
+    async function refreshSmartSuggestions() {
+      const topics = state.chats.slice(0, 6).map(c => c.title).filter(Boolean);
+      const sig = topics.join("|");
+      if (!topics.length || sig === lastSuggSig) return;
+      lastSuggSig = sig;
+      try {
+        const res = await fetch("https://orvix-ai-bot.bereket1643.workers.dev/api/suggestions", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ topics, apiKey: state.apiKey })
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data.items && data.items.length) {
+          activeSuggestions = data.items;
+          const grid = document.getElementById("suggestionsGrid");
+          if (grid) grid.innerHTML = renderSuggestionCards(activeSuggestions);
+        }
+      } catch (_) {}
+    }
+
+    function useSuggestion(text) {
+      document.getElementById("promptInput").value = text;
+      updateSendBtn();
+      sendMessage();
+    }
+
+    function autoResize(el) {
+      el.style.height = "auto";
+      el.style.height = Math.min(el.scrollHeight, 160) + "px";
+    }
+
+    function updateSendBtn() {
+      const val = document.getElementById("promptInput").value.trim();
+      const btn = document.getElementById("sendBtn");
+      const icon = document.getElementById("sendIcon");
+      if (state.isGenerating) {
+        btn.disabled = false;
+        icon.innerHTML = '<rect x="6" y="6" width="12" height="12" fill="currentColor" stroke="none"/>';
+      } else {
+        btn.disabled = !val && !state.attachments.length;
+        icon.innerHTML = '<line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/>';
+      }
+    }
+
+    function handleKey(e) {
+      if (e.key === "Enter" && !e.shiftKey && window.innerWidth >= 768) {
+        e.preventDefault();
+        if (!state.isGenerating) sendMessage();
+      }
+    }
+
+    function onSendOrStop() {
+      if (state.isGenerating && state.abortCtrl) {
+        state.abortCtrl.abort();
+      } else {
+        sendMessage();
+      }
+    }
+
+    function handleFiles(files) {
+      Array.from(files).forEach(file => {
+        const reader = new FileReader();
+        if (file.type.startsWith("image/")) {
+          reader.onload = () => {
+            const img = new Image();
+            img.onload = () => {
+              const maxDim = 1024;
+              let w = img.width, h = img.height;
+              if (w > maxDim || h > maxDim) {
+                if (w > h) { h = Math.round(h * maxDim / w); w = maxDim; }
+                else { w = Math.round(w * maxDim / h); h = maxDim; }
+              }
+              const c = document.createElement("canvas");
+              c.width = w; c.height = h;
+              c.getContext("2d").drawImage(img, 0, 0, w, h);
+              const compressed = c.toDataURL("image/jpeg", 0.82);
+              state.attachments.push({ type: "image", name: file.name, data: compressed });
+              renderAttachments(); updateSendBtn();
+            };
+            img.onerror = () => {
+              state.attachments.push({ type: "image", name: file.name, data: reader.result });
+              renderAttachments(); updateSendBtn();
+            };
+            img.src = reader.result;
+          };
+          reader.readAsDataURL(file);
+        } else {
+          reader.onload = () => { state.attachments.push({ type: "text", name: file.name, data: reader.result.slice(0, 12000) }); renderAttachments(); updateSendBtn(); };
+          reader.readAsText(file);
+        }
+      });
+    }
+
+    function renderAttachments() {
+      const box = document.getElementById("attachmentPreview");
+      box.classList.toggle("has-items", state.attachments.length > 0);
+      box.innerHTML = state.attachments.map((a, i) => (
+        '<div class="att-chip">' +
+          (a.type === "image" ? '<img src="' + a.data + '"/>' : '📄<span>' + escapeHtml(a.name) + '</span>') +
+          '<button onclick="state.attachments.splice(' + i + ',1);renderAttachments();updateSendBtn();">✕</button>' +
+        '</div>'
+      )).join("");
+    }
+
+    async function sendMessage(overrideText, isVoiceMode) {
+      const input = document.getElementById("promptInput");
+      const rawText = overrideText !== undefined ? overrideText : input.value.trim();
+      if (!rawText && !state.attachments.length) return;
+
+      let fullPrompt = rawText || "Analyze this image in detail.";
+      let display = rawText;
+      let images = [];
+      if (state.attachments.length) {
+        const textFiles = state.attachments.filter(a => a.type === "text");
+        const imgFiles = state.attachments.filter(a => a.type === "image");
+        if (textFiles.length) {
+          fullPrompt += "\n\n" + textFiles.map(f => "[File: " + f.name + "]\n" + f.data).join("\n\n");
+        }
+        if (imgFiles.length) {
+          images = imgFiles.map(f => f.data);
+        }
+        const nonImgNames = textFiles.map(a => a.name).join(", ");
+        if (nonImgNames) {
+          display = (rawText ? rawText + "\n" : "") + "[Attached: " + nonImgNames + "]";
+        }
+      }
+
+      if (!state.tempMode && !state.activeChatId) {
+        const id = "c_" + Date.now();
+        state.chats.unshift({ id, title: (rawText || "New Chat").slice(0, 40), createdAt: Date.now(), updatedAt: Date.now(), messages: [] });
+        state.activeChatId = id;
+      }
+
+      const msgs = getActiveMessages();
+      msgs.push({ role: "user", content: fullPrompt, display, images });
+      msgs.push({ role: "assistant", content: "" });
+
+      input.value = "";
+      autoResize(input);
+      state.attachments = [];
+      renderAttachments();
+      if (!state.tempMode) {
+        const chat = state.chats.find(x => x.id === state.activeChatId);
+        if (chat) chat.updatedAt = Date.now();
+        saveChats();
+      }
+      renderSidebar();
+      renderChat();
+      await streamResponse(msgs, isVoiceMode);
+    }
+
+    async function streamResponse(msgs, isVoiceMode) {
+      state.isGenerating = true;
+      state.abortCtrl = new AbortController();
+      updateSendBtn();
+
+      if (!isVoiceMode && state.model === "qwen/qwen3.8-27b") {
+        await new Promise(r => setTimeout(r, 2200));
+      }
+      const payloadMsgs = msgs.slice(0, -1).map(m => ({ role: m.role, content: m.content, images: m.images || [] }));
+      const selectedModel = MODELS.find(x => x.id === state.model) || MODELS[0];
+      const provider = state.provider || (state.apiKey ? selectedModel.provider : "");
+
+      try {
+        const res = await fetch("https://orvix-ai-bot.bereket1643.workers.dev/api/chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Telegram-Init-Data": tg ? (tg.initData || "") : ""
+          },
+          body: JSON.stringify({
+            messages: payloadMsgs,
+            model: state.model,
+            provider,
+            apiKey: state.apiKey,
+            systemPrompt: state.customInst,
+            fastVoice: !!isVoiceMode,
+            lang: appLang
+          }),
+          signal: state.abortCtrl.signal
+        });
+
+        if (!res.ok) {
+          const errText = await res.text();
+          msgs[msgs.length - 1].content = "Error: " + errText;
+          return;
+        }
+
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = "";
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split("\n");
+          buffer = lines.pop() || "";
+          for (const line of lines) {
+            const trimmed = line.trim();
+            if (!trimmed.startsWith("data:")) continue;
+            const data = trimmed.slice(5).trim();
+            if (data === "[DONE]") break;
+            try {
+              const json = JSON.parse(data);
+              const delta = json.choices && json.choices[0] && json.choices[0].delta && json.choices[0].delta.content;
+              if (delta) {
+                msgs[msgs.length - 1].content += delta;
+                renderChat();
+              }
+            } catch (_) {}
+          }
+        }
+      } catch (err) {
+        if (err.name !== "AbortError") {
+          msgs[msgs.length - 1].content += "\n\n*(Connection interrupted)*";
+        }
+      } finally {
+        state.isGenerating = false;
+        state.abortCtrl = null;
+        if (!state.tempMode) saveChats();
+        updateSendBtn();
+        renderChat();
+      }
+    }
+
+    function editMessage(idx) {
+      const msgs = getActiveMessages();
+      const text = msgs[idx].content;
+      msgs.splice(idx);
+      document.getElementById("promptInput").value = text;
+      autoResize(document.getElementById("promptInput"));
+      updateSendBtn();
+      renderChat();
+    }
+
+    async function regenerate() {
+      if (state.isGenerating) return;
+      const msgs = getActiveMessages();
+      if (msgs.length < 2) return;
+      msgs[msgs.length - 1].content = "";
+      renderChat();
+      await streamResponse(msgs);
+    }
+
+    function copyMsg(idx, btn) {
+      const msgs = getActiveMessages();
+      navigator.clipboard.writeText(msgs[idx].content);
+      btn.textContent = "Copied!";
+      setTimeout(() => btn.textContent = "Copy", 1500);
+    }
+
+    function speakMsg(idx) {
+      if (!("speechSynthesis" in window)) return;
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(getActiveMessages()[idx].content);
+      window.speechSynthesis.speak(u);
+    }
+
+    let recognition = null;
+    function toggleVoice() {
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SR) { openConfirm("Voice Input", "Voice input is not supported in this browser.", null); return; }
+      const btn = document.getElementById("micBtn");
+      if (recognition) { recognition.stop(); recognition = null; btn.classList.remove("recording"); return; }
+      recognition = new SR();
+      recognition.lang = appLang === "am" ? "am-ET" : "en-US";
+      recognition.onresult = (e) => {
+        const t = e.results[0][0].transcript;
+        const inp = document.getElementById("promptInput");
+        inp.value = (inp.value ? inp.value + " " : "") + t;
+        autoResize(inp); updateSendBtn();
+      };
+      recognition.onend = () => { recognition = null; btn.classList.remove("recording"); };
+      btn.classList.add("recording");
+      recognition.start();
+    }
+
+    function openSettings() {
+      document.getElementById("customInstInput").value = state.customInst;
+      document.getElementById("providerSelect").value = state.provider;
+      document.getElementById("apiKeyInput").value = state.apiKey;
+      document.getElementById("settingsModal").classList.add("open");
+    }
+    function closeSettings() { document.getElementById("settingsModal").classList.remove("open"); }
+    function saveSettings() {
+      state.customInst = document.getElementById("customInstInput").value.trim();
+      state.provider = document.getElementById("providerSelect").value;
+      state.apiKey = document.getElementById("apiKeyInput").value.trim();
+      localStorage.setItem("tg_gpt_inst", state.customInst);
+      localStorage.setItem("tg_gpt_provider", state.provider);
+      localStorage.setItem("tg_gpt_apikey", state.apiKey);
+      renderChat();
+      closeSettings();
+    }
+    function clearAllChats() {
+      openConfirm("Clear All Chats?", "Are you sure you want to delete all saved conversations?", () => {
+        state.chats = [];
+        state.activeChatId = null;
+        saveChats();
+        renderSidebar();
+        renderChat();
+        closeSettings();
+      });
+    }
+
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+    }
+
+
+    // --- Continuous Voice Conversation Mode ---
+    let voicePreset = localStorage.getItem("tg_gpt_voice_preset") || "female";
+    function getVoiceConfig() {
+      if (voicePreset === "male") return { voice: "troy", rate: 1.03 };
+      if (voicePreset === "kids") return { voice: "autumn", rate: 1.18 };
+      return { voice: "hannah", rate: 1.03 };
+    }
+    function setVoicePreset(p) {
+      voicePreset = p;
+      localStorage.setItem("tg_gpt_voice_preset", p);
+      ["Female", "Male", "Kids"].forEach(k => {
+        const b = document.getElementById("vPick" + k);
+        if (b) b.style.background = (p === k.toLowerCase()) ? "rgba(56,189,248,0.35)" : "rgba(255,255,255,0.08)";
+      });
+    }
+
+    let voiceActive = false;
+    let voiceMuted = false;
+    let voiceBusy = false;
+    let voiceIgnoreUntil = 0;
+    let voiceRec = null;
+    let voiceTimer = null;
+    const voiceAudio = new Audio();
+    let vCtx = null;
+    let activeVoiceNode = null;
+    let isAISpeaking = false;
+    let speakStartedAt = 0;
+    let lastAIReplyWords = [];
+
+
+    let showVoiceCaptions = true;
+    let voiceAnalyser = null;
+    let orbRaf = null;
+
+    function toggleVoiceCaptions() {
+      showVoiceCaptions = !showVoiceCaptions;
+      const cap = document.getElementById("voiceCaption");
+      const btn = document.getElementById("voiceCcBtn");
+      if (cap) cap.classList.toggle("hidden", !showVoiceCaptions);
+      if (btn) btn.classList.toggle("on", showVoiceCaptions);
+    }
+
+    function startOrbAudioLoop() {
+      if (!voiceAnalyser) return;
+      const data = new Uint8Array(voiceAnalyser.frequencyBinCount);
+      const orb = document.getElementById("voiceOrb");
+      const halo = document.getElementById("orbHalo");
+      function tick() {
+        if (!isAISpeaking || !voiceAnalyser) {
+          if (orb) orb.style.transform = "";
+          if (halo) halo.style.transform = "";
+          orbRaf = null;
+          return;
+        }
+        voiceAnalyser.getByteFrequencyData(data);
+        let sum = 0;
+        for (let i = 0; i < 16; i++) sum += data[i];
+        const avg = sum / 16 / 255;
+        const sc = 1 + avg * 0.24;
+        if (orb) orb.style.transform = "scale(" + sc.toFixed(3) + ")";
+        if (halo) halo.style.transform = "scale(" + (1 + avg * 0.42).toFixed(3) + ")";
+        orbRaf = requestAnimationFrame(tick);
+      }
+      if (!orbRaf) orbRaf = requestAnimationFrame(tick);
+    }
+
+    function setVoiceUI(mode, caption) {
+      const orb = document.getElementById("voiceOrb");
+      const badge = document.getElementById("voiceStatusBadge");
+      const cap = document.getElementById("voiceCaption");
+      orb.className = "voice-orb " + mode;
+      badge.textContent = mode === "listening" ? "Listening" : mode === "thinking" ? "Thinking..." : "Speaking (tap orb to interrupt)";
+      if (caption !== undefined) cap.textContent = caption;
+      const lh = document.getElementById("liveHint");
+      if (lh) lh.textContent = mode === "listening" ? "Listening • Speak naturally" : mode === "thinking" ? "Orvix is thinking..." : "Speaking • Tap orb to interrupt";
+    }
+
+    function openVoiceMode() {
+      try {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (AC) { if (!vCtx) vCtx = new AC(); if (vCtx.state === "suspended") vCtx.resume(); }
+        voiceAudio.src = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA";
+        voiceAudio.play().catch(() => {});
+      } catch (_) {}
+      if ("speechSynthesis" in window) {
+        try { window.speechSynthesis.cancel(); window.speechSynthesis.speak(new SpeechSynthesisUtterance("")); } catch (_) {}
+      }
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SR) {
+        voiceActive = true;
+        setVoicePreset(voicePreset);
+      document.getElementById("voiceOverlay").classList.add("open");
+        setVoiceUI("listening", "Your Telegram WebView does not support auto-mic. Use your keyboard mic below or open in Chrome.");
+        return;
+      }
+      voiceActive = true;
+      voiceMuted = false;
+      document.getElementById("voiceMuteBtn").classList.remove("muted");
+      document.getElementById("voiceOverlay").classList.add("open");
+      startVoiceTurn();
+    }
+
+    function stopCurrentSpeech() {
+      isAISpeaking = false;
+      if (activeVoiceNode) { try { activeVoiceNode.onended = null; activeVoiceNode.stop(); } catch (_) {} activeVoiceNode = null; }
+      try { voiceAudio.onended = null; voiceAudio.pause(); voiceAudio.currentTime = 0; } catch (_) {}
+      if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    }
+
+    function closeVoiceMode() {
+      voiceActive = false;
+      voiceBusy = false;
+      clearTimeout(voiceTimer);
+      if (voiceRec) { try { voiceRec.abort(); } catch (_) {} voiceRec = null; }
+      stopCurrentSpeech();
+      if (state.abortCtrl) state.abortCtrl.abort();
+      document.getElementById("voiceOverlay").classList.remove("open");
+    }
+
+    function toggleVoiceMute() {
+      voiceMuted = !voiceMuted;
+      document.getElementById("voiceMuteBtn").classList.toggle("muted", voiceMuted);
+      if (voiceMuted) {
+        if (voiceRec) { try { voiceRec.abort(); } catch (_) {} voiceRec = null; }
+        setVoiceUI("listening", "Mic muted. Tap mic to resume.");
+      } else {
+        startVoiceTurn();
+      }
+    }
+
+    function sendVoiceFallback() {
+      const inp = document.getElementById("voiceFallbackInput");
+      const txt = inp.value.trim();
+      if (!txt) return;
+      inp.value = "";
+      if (voiceRec) { try { voiceRec.abort(); } catch (_) {} voiceRec = null; }
+      processVoiceQuery(txt);
+    }
+    function onOrbTap() {
+      if (isAISpeaking || !voiceAudio.paused) { stopCurrentSpeech(); if (voiceActive && !voiceMuted) startVoiceTurn(); return; }
+      if ("speechSynthesis" in window && window.speechSynthesis.speaking) {
+        window.speechSynthesis.cancel();
+        if (voiceActive && !voiceMuted) startVoiceTurn();
+        return;
+      }
+      if (voiceActive && !voiceMuted && !voiceRec) {
+        startVoiceTurn();
+      }
+    }
+
+    function startVoiceTurn() {
+      if (!voiceActive || voiceMuted) return;
+      voiceBusy = false;
+      setVoiceUI("listening", "Listening... Speak now");
+      if (voiceRec) return;
+
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SR) return;
+      voiceRec = new SR();
+      voiceRec.lang = appLang === "am" ? "am-ET" : "en-US";
+      voiceRec.continuous = true;
+      voiceRec.interimResults = true;
+      let bufferText = "";
+
+      voiceRec.onresult = (e) => {
+        if (!voiceActive || voiceMuted) return;
+        let interim = "";
+        let newFinal = "";
+        for (let i = e.resultIndex; i < e.results.length; i++) {
+          if (e.results[i].isFinal) newFinal += " " + e.results[i][0].transcript;
+          else interim += e.results[i][0].transcript;
+        }
+        if (isAISpeaking || voiceBusy || Date.now() < voiceIgnoreUntil) return;
+        if (newFinal) bufferText += newFinal;
+        const preview = (bufferText + " " + interim).trim();
+        if (preview) document.getElementById("voiceCaption").textContent = preview;
+        clearTimeout(voiceTimer);
+        if (bufferText.trim()) {
+          voiceTimer = setTimeout(() => {
+            const spoken = bufferText.trim();
+            bufferText = "";
+            const spWords = spoken.toLowerCase().replace(/[^a-z0-9\s]/g, "").split(/\s+/).filter(w => w.length > 2);
+            const overlap = spWords.filter(w => lastAIReplyWords.includes(w)).length;
+            if (spWords.length > 0 && overlap / spWords.length >= 0.6) {
+              return;
+            }
+            if (spoken && !voiceBusy && voiceActive && !voiceMuted) {
+              processVoiceQuery(spoken);
+            }
+          }, 500);
+        }
+      };
+
+      voiceRec.onerror = (e) => {
+        if (!voiceActive || voiceMuted) return;
+        if (e.error !== "no-speech") {
+          setVoiceUI("listening", "Tap Allow once, or tap the orb to speak.");
+        }
+      };
+
+      voiceRec.onend = () => {
+        voiceRec = null;
+        if (voiceActive && !voiceMuted && !voiceBusy) {
+          setVoiceUI("listening", "Tap the orb to speak again.");
+        }
+      };
+
+      try { voiceRec.start(); } catch (_) { voiceRec = null; }
+    }
+
+    async function processVoiceQuery(spokenText) {
+      voiceBusy = true;
+      setVoiceUI("thinking", spokenText);
+      if (!state.tempMode && !state.activeChatId) {
+        const id = "c_" + Date.now();
+        state.chats.unshift({ id, title: spokenText.slice(0, 40), createdAt: Date.now(), updatedAt: Date.now(), messages: [] });
+        state.activeChatId = id;
+      }
+      const msgs = getActiveMessages();
+      msgs.push({ role: "user", content: spokenText, display: spokenText });
+      const cfg = getVoiceConfig();
+
+      try {
+        const res = await fetch("https://orvix-ai-bot.bereket1643.workers.dev/api/voice", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "X-Telegram-Init-Data": tg ? (tg.initData || "") : "" },
+          body: JSON.stringify({
+            messages: msgs.map(m => ({ role: m.role, content: m.content })),
+            apiKey: state.apiKey,
+            systemPrompt: state.customInst,
+            voice: cfg.voice,
+            lang: appLang
+          })
+        });
+        const data = await res.json();
+        const replyText = data.reply || data.error || "Sorry, try again.";
+        msgs.push({ role: "assistant", content: replyText });
+        if (!state.tempMode) saveChats();
+        renderSidebar();
+        renderChat();
+        if (!voiceActive) return;
+
+        lastAIReplyWords = replyText.toLowerCase().replace(/[^a-z0-9\s]/g, "").split(/\s+/).filter(w => w.length > 2);
+        setVoiceUI("speaking", replyText);
+        let played = false;
+        if (data.audioBase64) {
+          const bin = atob(data.audioBase64);
+          const bytes = new Uint8Array(bin.length);
+          for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+          if (vCtx) {
+            try {
+              if (vCtx.state === "suspended") await vCtx.resume();
+              const audioBuf = await vCtx.decodeAudioData(bytes.buffer.slice(0));
+              stopCurrentSpeech();
+              const srcNode = vCtx.createBufferSource();
+              activeVoiceNode = srcNode;
+              isAISpeaking = true;
+              speakStartedAt = Date.now();
+              srcNode.buffer = audioBuf;
+              srcNode.playbackRate.value = cfg.rate;
+              voiceAnalyser = vCtx.createAnalyser();
+              voiceAnalyser.fftSize = 64;
+              srcNode.connect(voiceAnalyser);
+              voiceAnalyser.connect(vCtx.destination);
+              startOrbAudioLoop();
+              srcNode.onended = () => { isAISpeaking = false; activeVoiceNode = null; voiceIgnoreUntil = Date.now() + 950; setTimeout(() => { if (voiceActive && !voiceMuted) startVoiceTurn(); }, 750); };
+              srcNode.start(0);
+              played = true;
+            } catch (_) {}
+          }
+          if (!played) {
+            const url = "data:" + (data.mime || "audio/wav") + ";base64," + data.audioBase64;
+            stopCurrentSpeech();
+            isAISpeaking = true;
+            speakStartedAt = Date.now();
+            voiceAudio.src = url;
+            voiceAudio.playbackRate = cfg.rate;
+            voiceAudio.onended = () => { isAISpeaking = false; voiceIgnoreUntil = Date.now() + 950; setTimeout(() => { if (voiceActive && !voiceMuted) startVoiceTurn(); }, 750); };
+            voiceAudio.onerror = () => { if (voiceActive && !voiceMuted) startVoiceTurn(); };
+            await voiceAudio.play();
+            played = true;
+          }
+        }
+        if (!played && data.ttsError) {
+          document.getElementById("voiceStatusBadge").textContent = data.ttsError.slice(0, 55);
+        }
+        if (!played) {
+          if ("speechSynthesis" in window) {
+            window.speechSynthesis.cancel();
+            const utter = new SpeechSynthesisUtterance(replyText);
+            utter.rate = cfg.rate;
+            utter.onend = () => { voiceIgnoreUntil = Date.now() + 900; setTimeout(() => { if (voiceActive && !voiceMuted) startVoiceTurn(); }, 650); };
+            utter.onerror = () => { if (voiceActive && !voiceMuted) startVoiceTurn(); };
+            window.speechSynthesis.speak(utter);
+          } else {
+            setTimeout(() => { if (voiceActive && !voiceMuted) startVoiceTurn(); }, 1800);
+          }
+        }
+      } catch (err) {
+        setVoiceUI("listening", "Connection error. Tap the orb to retry.");
+        voiceBusy = false;
+      }
+    }
+
+        init();
   </script>
 </body>
 </html>
