@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>Orvix AI</title>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <link rel="manifest" href="https://orvix-ai-bot.bereket1643.workers.dev/manifest.json" />
   <link rel="apple-touch-icon" href="https://orvix-ai-bot.bereket1643.workers.dev/logo.png" />
   <meta name="theme-color" content="#070b12" />
@@ -477,9 +478,17 @@
           <label class="field-label" style="color:#cbd5e1;">Password</label>
           <input id="authPassword" class="field-input" style="background:rgba(255,255,255,0.08);color:#fff;" type="password" placeholder="At least 6 characters" onkeydown="if(event.key==='Enter') submitAuth()" />
         </div>
+        <div id="authOtpWrap" style="display:none;">
+          <label class="field-label" style="color:#cbd5e1;">6-Digit Email Code</label>
+          <div style="display:flex; gap:8px;">
+            <input id="authOtp" class="field-input" style="background:rgba(255,255,255,0.08);color:#fff;" type="text" maxlength="6" placeholder="123456" />
+            <button id="sendOtpBtn" type="button" class="btn-primary" style="white-space:nowrap;background:rgba(56,189,248,0.2);color:#7dd3fc;border:1px solid rgba(56,189,248,0.35);" onclick="sendOtpCode()">Send Code</button>
+          </div>
+        </div>
       </div>
       <div id="authErr" class="auth-err"></div>
       <button id="authSubmitBtn" type="button" class="btn-primary" style="background:linear-gradient(135deg,#38bdf8,#10a37f);color:#031520;padding:12px;" onclick="submitAuth()">Log In</button>
+      <div id="googleBtnWrap" style="display:flex;justify-content:center;margin-top:4px;"></div>
     </div>
   </div>
 
@@ -721,6 +730,62 @@
 
 
     let authMode = "login";
+    let serverOtpEnabled = false;
+    async function loadAuthConfig() {
+      try {
+        const r = await fetch("https://orvix-ai-bot.bereket1643.workers.dev/api/auth/config");
+        if (!r.ok) return;
+        const cfg = await r.json();
+        serverOtpEnabled = !!cfg.otpEnabled;
+        if (authMode === "signup") {
+          document.getElementById("authOtpWrap").style.display = serverOtpEnabled ? "block" : "none";
+        }
+        if (cfg.googleClientId && window.google && window.google.accounts && window.google.accounts.id) {
+          window.google.accounts.id.initialize({
+            client_id: cfg.googleClientId,
+            callback: handleGoogleCredential
+          });
+          window.google.accounts.id.renderButton(document.getElementById("googleBtnWrap"), {
+            theme: "filled_black", size: "large", shape: "pill", width: 320
+          });
+        }
+      } catch (_) {}
+    }
+    async function handleGoogleCredential(resp) {
+      const errEl = document.getElementById("authErr");
+      errEl.textContent = "";
+      try {
+        const r = await fetch("https://orvix-ai-bot.bereket1643.workers.dev/api/auth/google", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ credential: resp.credential })
+        });
+        const data = await r.json();
+        if (!r.ok) { errEl.textContent = data.error || "Google sign-in failed."; return; }
+        webToken = data.token; webUser = data.user;
+        localStorage.setItem("orvix_web_token", webToken);
+        localStorage.setItem("orvix_web_user", JSON.stringify(webUser));
+        applyWebUserUI(webUser);
+      } catch (_) { errEl.textContent = "Google sign-in network error."; }
+    }
+    async function sendOtpCode() {
+      const email = document.getElementById("authEmail").value.trim();
+      const errEl = document.getElementById("authErr");
+      const btn = document.getElementById("sendOtpBtn");
+      errEl.textContent = "";
+      btn.disabled = true; btn.textContent = "Sending...";
+      try {
+        const r = await fetch("https://orvix-ai-bot.bereket1643.workers.dev/api/auth/send-otp", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email })
+        });
+        const d = await r.json();
+        if (!r.ok) errEl.textContent = d.error || "Could not send code.";
+        else { errEl.style.color = "#6ee7b7"; errEl.textContent = "6-digit code sent to your email!"; }
+      } catch (_) { errEl.textContent = "Network error sending code."; }
+      finally { btn.disabled = false; btn.textContent = "Send Code"; }
+    }
     let webUser = JSON.parse(localStorage.getItem("orvix_web_user") || "null");
     let webToken = localStorage.getItem("orvix_web_token") || "";
 
@@ -729,6 +794,7 @@
       document.getElementById("tabLogin").classList.toggle("active", m === "login");
       document.getElementById("tabSignup").classList.toggle("active", m === "signup");
       document.getElementById("authNameWrap").style.display = m === "signup" ? "block" : "none";
+      document.getElementById("authOtpWrap").style.display = (m === "signup" && serverOtpEnabled) ? "block" : "none";
       document.getElementById("authSubmitBtn").textContent = m === "signup" ? "Create Account" : "Log In";
       document.getElementById("authErr").textContent = "";
     }
@@ -755,7 +821,7 @@
         const res = await fetch(endpoint, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(authMode === "signup" ? { name, email, password } : { email, password })
+          body: JSON.stringify(authMode === "signup" ? { name, email, password, otp: document.getElementById("authOtp").value.trim() } : { email, password })
         });
         const data = await res.json();
         if (!res.ok) {
@@ -807,6 +873,7 @@
       renderSidebar();
       renderChat();
       refreshSmartSuggestions();
+      loadAuthConfig();
       if (webUser && webToken) { applyWebUserUI(webUser); } else { document.getElementById('authGate').classList.add('open'); }
       setTimeout(() => {
         const sp = document.getElementById("splashScreen");
