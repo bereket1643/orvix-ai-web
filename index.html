@@ -1388,7 +1388,8 @@
             apiKey: state.apiKey,
             systemPrompt: state.customInst,
             fastVoice: !!isVoiceMode,
-            lang: appLang
+            lang: appLang,
+            userName: (document.getElementById("userName")?.textContent || "").trim()
           }),
           signal: state.abortCtrl.signal
         });
